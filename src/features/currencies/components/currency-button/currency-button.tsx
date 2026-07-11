@@ -71,18 +71,7 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({
                                 <span>{filteredPopular.length}</span>
                             </p>
                             {filteredPopular.map((code) => (
-                                <button
-                                    key={code}
-                                    className={`${styles.item}${code === selectedCode ? ` ${styles.itemSelected}` : ''}`}
-                                    onClick={() => onSelect(code)}
-                                >
-                                    <CurrencyFlag currencyCode={code} />
-                                    <span className={styles.itemCode}>{code}</span>
-                                    <span className={styles.itemLabel}>{currencies[code]}</span>
-                                    {code === selectedCode && (
-                                        <Check className={styles.itemCheck} />
-                                    )}
-                                </button>
+                                <CurrencyItem key={code} currencies={currencies} currencyCode={code} selectedCode={selectedCode} onSelectCode={onSelect} />
                             ))}
                         </section>
                     )}
@@ -93,18 +82,7 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({
                                 <span>{filteredOther.length}</span>
                             </p>
                             {filteredOther.map((code) => (
-                                <button
-                                    key={code}
-                                    className={`${styles.item}${code === selectedCode ? ` ${styles.itemSelected}` : ''}`}
-                                    onClick={() => onSelect(code)}
-                                >
-                                    <CurrencyFlag currencyCode={code} />
-                                    <span className={styles.itemCode}>{code}</span>
-                                    <span className={styles.itemLabel}>{currencies[code]}</span>
-                                    {code === selectedCode && (
-                                        <Check className={styles.itemCheck} />
-                                    )}
-                                </button>
+                                <CurrencyItem key={code} currencies={currencies} currencyCode={code} selectedCode={selectedCode} onSelectCode={onSelect} />
                             ))}
                         </section>
                     )}
@@ -115,3 +93,25 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({
 }
 
 export default CurrencyButton
+
+interface CurrencyItemProps {
+    currencies: CurrenciesResponse
+    currencyCode: string
+    selectedCode: string
+    onSelectCode: (code: string) => void
+}
+
+function CurrencyItem({ currencies, currencyCode, selectedCode, onSelectCode }: CurrencyItemProps) {
+    return (
+        <button
+            className={`${styles.item}${currencyCode === selectedCode ? ` ${styles.itemSelected}` : ''}`}
+            onClick={() => onSelectCode(currencyCode)}>
+            <CurrencyFlag currencyCode={currencyCode} />
+            <span className={styles.itemCode}>{currencyCode}</span>
+            <span className={styles.itemLabel}>{currencies[currencyCode]}</span>
+            {currencyCode === selectedCode && (
+                <Check className={styles.itemCheck} />
+            )}
+        </button>
+    )
+}

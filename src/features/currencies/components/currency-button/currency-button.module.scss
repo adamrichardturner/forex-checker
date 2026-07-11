@@ -1,12 +1,16 @@
+@use 'index' as styles;
+
 .trigger {
     display: flex;
-    padding: var(--spacing-125, 10px);
+    @include styles.spacing-125(padding);
     align-items: center;
-    gap: var(--spacing-100, 8px);
+    @include styles.spacing-100(gap);
     cursor: pointer;
-    background: var(--colors-neutral-500, #2e2e2e);
+    @include styles.neutral-500(background);
     border-radius: var(--corner-radius-8, 8px);
-    border: 1px solid var(--colors-neutral-400, #3d3d3d);
+    @include styles.neutral-400(border-color);
+    border-width: 1px;
+    border-style: solid;
 }
 
 .triggerCode {
@@ -24,12 +28,14 @@
 .popover {
     display: flex;
     width: 376px;
-    padding: var(--spacing-100, 8px);
+    @include styles.spacing-100(padding);
     flex-direction: column;
-    gap: var(--spacing-125, 10px);
+    @include styles.spacing-125(gap);
     border-radius: var(--corner-radius-8, 8px);
-    border: 1px solid var(--colors-neutral-400, #3d3d3d);
-    background: var(--colors-neutral-600, #202022);
+    @include styles.neutral-400(border-color);
+    border-width: 1px;
+    border-style: solid;
+    @include styles.neutral-600(background);
     box-shadow: 0 20px 60px 0 rgba(10, 10, 10, 0.5);
 }
 
@@ -51,13 +57,15 @@
 
 .searchInput {
     padding-left: 32px;
-    width: 100%;
+    @include styles.spacing-150(padding);
+
+
 }
 
 .list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-100, 8px);
+    @include styles.spacing-100(gap);
     max-height: 320px;
     overflow-y: auto;
     width: 100%;
@@ -77,22 +85,24 @@
 .item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-100, 8px);
+    @include styles.spacing-100(gap);
     width: 100%;
-    padding: 8px;
+    @include styles.spacing-100(padding);
     border-radius: 6px;
     border: none;
     background: transparent;
     cursor: pointer;
     text-align: left;
+    border: 1px solid transparent;
 
     &:hover {
-        background: var(--colors-neutral-500, #2e2e2e);
+        border-radius: var(--corner-radius-4, 4px);
+        @include styles.neutral-200(border-color);
+        border-width: 1px;
+        border-style: solid;
+        @include styles.neutral-600(background);
+        transition: 0.25s ease-in-out;
     }
-}
-
-.itemSelected {
-    background: var(--colors-neutral-500, #2e2e2e);
 }
 
 .itemCode {

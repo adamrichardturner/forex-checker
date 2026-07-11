@@ -14,3 +14,93 @@
   border: 0;
   clip-path: inset(50%);
 }
+
+@mixin text-preset-4 {
+  font-family: "JetBrains Mono";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 1px;
+}
+
+@mixin text-preset-5 {
+  font-family: "JetBrains Mono";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 0.5px;
+}
+
+@mixin spacing-token($property, $token) {
+  @if $token == 25 {
+    #{$property}: var(--spacing-025, 2px);
+  } @else if $token == 50 {
+    #{$property}: var(--spacing-050, 4px);
+  } @else if $token == 100 {
+    #{$property}: var(--spacing-100, 8px);
+  } @else if $token == 125 {
+    #{$property}: var(--spacing-125, 10px);
+  } @else if $token == 150 {
+    #{$property}: var(--spacing-150, 12px);
+  } @else {
+    @error 'Unknown spacing token. Allowed: 25, 50, 100, 125, 150.';
+  }
+}
+
+@mixin color-neutral-token($property, $token) {
+  @if $token == 50 {
+    #{$property}: var(--colors-neutral-50, #ffffff);
+  } @else if $token == 200 {
+    #{$property}: var(--colors-neutral-200, #9d9d9d);
+  } @else if $token == 400 {
+    #{$property}: var(--colors-neutral-400, #3d3d3d);
+  } @else if $token == 500 {
+    #{$property}: var(--colors-neutral-500, #2e2e2e);
+  } @else if $token == 600 {
+    #{$property}: var(--colors-neutral-600, #202022);
+  } @else {
+    @error 'Unknown neutral color token. Allowed: 50, 200, 400, 500, 600.';
+  }
+}
+
+@mixin spacing-025($property) {
+  @include spacing-token($property, 25);
+}
+
+@mixin spacing-050($property) {
+  @include spacing-token($property, 50);
+}
+
+@mixin spacing-100($property) {
+  @include spacing-token($property, 100);
+}
+
+@mixin spacing-125($property) {
+  @include spacing-token($property, 125);
+}
+
+@mixin spacing-150($property) {
+  @include spacing-token($property, 150);
+}
+
+@mixin neutral-50($property: color) {
+  @include color-neutral-token($property, 50);
+}
+
+@mixin neutral-200($property: color) {
+  @include color-neutral-token($property, 200);
+}
+
+@mixin neutral-400($property: color) {
+  @include color-neutral-token($property, 400);
+}
+
+@mixin neutral-500($property: color) {
+  @include color-neutral-token($property, 500);
+}
+
+@mixin neutral-600($property: color) {
+  @include color-neutral-token($property, 600);
+}
