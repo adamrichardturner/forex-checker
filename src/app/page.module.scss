@@ -1,0 +1,12 @@
+@use 'index' as styles;
+
+.page {
+  display: grid;
+  min-block-size: 100svh;
+  place-items: center;
+  padding: clamp(1rem, 5vw, 4rem);
+
+  &:focus-visible {
+    @include styles.focus-ring;
+  }
+}
