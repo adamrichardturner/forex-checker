@@ -1,6 +1,116 @@
-.button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
+.trigger {
+    display: flex;
+    padding: var(--spacing-125, 10px);
+    align-items: center;
+    gap: var(--spacing-100, 8px);
+    cursor: pointer;
+    background: var(--colors-neutral-500, #2e2e2e);
+    border-radius: var(--corner-radius-8, 8px);
+    border: 1px solid var(--colors-neutral-400, #3d3d3d);
+}
+
+.triggerCode {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--colors-neutral-100, #f0f0f0);
+}
+
+.triggerChevron {
+    width: 14px;
+    height: 14px;
+    color: var(--colors-neutral-300, #a0a0a0);
+}
+
+.popover {
+    display: flex;
+    width: 376px;
+    padding: var(--spacing-100, 8px);
+    flex-direction: column;
+    gap: var(--spacing-125, 10px);
+    border-radius: var(--corner-radius-8, 8px);
+    border: 1px solid var(--colors-neutral-400, #3d3d3d);
+    background: var(--colors-neutral-600, #202022);
+    box-shadow: 0 20px 60px 0 rgba(10, 10, 10, 0.5);
+}
+
+.searchWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 10px;
+    width: 14px;
+    height: 14px;
+    color: var(--colors-neutral-300, #a0a0a0);
+    pointer-events: none;
+}
+
+.searchInput {
+    padding-left: 32px;
+    width: 100%;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-100, 8px);
+    max-height: 320px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--colors-neutral-300, #a0a0a0);
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-100, 8px);
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+
+    &:hover {
+        background: var(--colors-neutral-500, #2e2e2e);
+    }
+}
+
+.itemSelected {
+    background: var(--colors-neutral-500, #2e2e2e);
+}
+
+.itemCode {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--colors-neutral-100, #f0f0f0);
+    min-width: 40px;
+}
+
+.itemLabel {
+    font-size: 0.8rem;
+    color: var(--colors-neutral-300, #a0a0a0);
+    flex: 1;
+}
+
+.itemCheck {
+    width: 14px;
+    height: 14px;
+    color: var(--colors-accent, #c6f135);
+    margin-left: auto;
 }
