@@ -1,1 +1,1 @@
-// TODO: Add index file for currency flag component
+export { default } from './currency-flag'
