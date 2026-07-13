@@ -1,4 +1,3 @@
-
 'use client'
 import styles from './page.module.scss'
 import CurrencyButton from '@/features/currencies/components/currency-button/currency-button'
@@ -17,7 +16,11 @@ export default function HomePage() {
   return (
     <main className={styles.page}>
       <h1>Forex checker</h1>
-      <CurrencyButton selectedCode="USD" currencies={DEV_CURRENCIES} onSelect={(code) => console.log(code)} />
+      <CurrencyButton
+        selectedCode="USD"
+        currencies={DEV_CURRENCIES}
+        onSelect={(code) => console.log(code)}
+      />
     </main>
   )
 }

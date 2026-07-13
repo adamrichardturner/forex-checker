@@ -1,156 +1,156 @@
 @use 'index' as styles;
 
 .trigger {
-    display: flex;
-    @include styles.spacing-125(padding);
-    align-items: center;
-    @include styles.spacing-100(gap);
-    cursor: pointer;
-    @include styles.neutral-500(background);
-    border-radius: var(--corner-radius-8, 8px);
-    @include styles.neutral-400(border-color);
-    border-width: 1px;
-    border-style: solid;
+  display: flex;
+  @include styles.spacing-125(padding);
+  align-items: center;
+  @include styles.spacing-100(gap);
+  cursor: pointer;
+  @include styles.neutral-500(background);
+  border-radius: var(--corner-radius-8, 8px);
+  @include styles.neutral-400(border-color);
+  border-width: 1px;
+  border-style: solid;
 }
 
 .triggerCode {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: var(--colors-neutral-100, #f0f0f0);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--colors-neutral-100, #f0f0f0);
 }
 
 .triggerChevron {
-    width: 14px;
-    height: 14px;
-    color: var(--colors-neutral-300, #a0a0a0);
+  width: 14px;
+  height: 14px;
+  color: var(--colors-neutral-300, #a0a0a0);
 }
 
 .popover {
-    display: flex;
-    width: 376px;
-    @include styles.spacing-100(padding);
-    flex-direction: column;
-    @include styles.spacing-125(gap);
-    border-radius: var(--corner-radius-8, 8px);
-    @include styles.neutral-400(border-color);
-    border-width: 1px;
-    border-style: solid;
-    @include styles.neutral-600(background);
-    box-shadow: 0 20px 60px 0 rgba(10, 10, 10, 0.5);
+  display: flex;
+  width: 376px;
+  @include styles.spacing-100(padding);
+  flex-direction: column;
+  @include styles.spacing-125(gap);
+  border-radius: var(--corner-radius-8, 8px);
+  @include styles.neutral-400(border-color);
+  border-width: 1px;
+  border-style: solid;
+  @include styles.neutral-600(background);
+  box-shadow: 0 20px 60px 0 rgba(10, 10, 10, 0.5);
 }
 
 .searchWrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .searchIcon {
-    position: absolute;
-    left: 12px;
-    width: 14px;
-    height: 14px;
-    color: var(--colors-neutral-50, #FFF);
-    pointer-events: none;
+  position: absolute;
+  left: 12px;
+  width: 14px;
+  height: 14px;
+  color: var(--colors-neutral-50, #fff);
+  pointer-events: none;
 }
 
 .searchInput {
-    @include styles.spacing-150(padding);
-    padding-left: 36px;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 120%;
-    /* 14.4px */
-    letter-spacing: 0.5px;
+  @include styles.spacing-150(padding);
+  padding-left: 36px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  /* 14.4px */
+  letter-spacing: 0.5px;
 
-    &:hover,
-    &:focus {
-        outline: none;
-        border-color: var(--colors-neutral-200, #e0e0e0);
-        border-width: 1px;
-        border-style: solid;
-        transition: 0.25s ease-in-out;
-    }
-
-    &:active {
-        outline: none;
-        border-color: var(--colors-lime-500, #c6f135);
-        border-width: 1px;
-        border-style: solid;
-        transition: 0.25s ease-in-out;
-    }
-}
-
-.list {
-    display: flex;
-    flex-direction: column;
-    @include styles.spacing-100(gap);
-    max-height: 320px;
-    overflow-y: auto;
-    width: 100%;
-}
-
-.sectionHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 8px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--colors-neutral-300, #a0a0a0);
-}
-
-.item {
-    display: flex;
-    align-items: center;
-    @include styles.spacing-100(gap);
-    width: 100%;
-    @include styles.spacing-100(padding);
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    text-align: left;
-    border: 1px solid transparent;
-
-    &:hover {
-        border-radius: var(--corner-radius-4, 4px);
-        @include styles.neutral-200(border-color);
-        border-width: 1px;
-        border-style: solid;
-        @include styles.neutral-600(background);
-        transition: 0.25s ease-in-out;
-    }
-}
-
-.itemCode {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: var(--colors-neutral-100, #f0f0f0);
-    min-width: 40px;
-}
-
-.itemLabel {
-    font-size: 0.8rem;
-    color: var(--colors-neutral-300, #a0a0a0);
-    flex: 1;
-}
-
-.itemCheck {
-    width: 14px;
-    height: 14px;
-    color: var(--colors-accent, #c6f135);
-    margin-left: auto;
-}
-
-.itemSelected {
-    @include styles.neutral-600(background);
-    border-color: var(--colors-lime-500, #c6f135);
-    border-radius: var(--corner-radius-4, 4px);
+  &:hover,
+  &:focus {
+    outline: none;
+    border-color: var(--colors-neutral-200, #e0e0e0);
     border-width: 1px;
     border-style: solid;
     transition: 0.25s ease-in-out;
+  }
+
+  &:active {
+    outline: none;
+    border-color: var(--colors-lime-500, #c6f135);
+    border-width: 1px;
+    border-style: solid;
+    transition: 0.25s ease-in-out;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  @include styles.spacing-100(gap);
+  max-height: 320px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--colors-neutral-300, #a0a0a0);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  @include styles.spacing-100(gap);
+  width: 100%;
+  @include styles.spacing-100(padding);
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  border: 1px solid transparent;
+
+  &:hover {
+    border-radius: var(--corner-radius-4, 4px);
+    @include styles.neutral-200(border-color);
+    border-width: 1px;
+    border-style: solid;
+    @include styles.neutral-600(background);
+    transition: 0.25s ease-in-out;
+  }
+}
+
+.itemCode {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--colors-neutral-100, #f0f0f0);
+  min-width: 40px;
+}
+
+.itemLabel {
+  font-size: 0.8rem;
+  color: var(--colors-neutral-300, #a0a0a0);
+  flex: 1;
+}
+
+.itemCheck {
+  width: 14px;
+  height: 14px;
+  color: var(--colors-accent, #c6f135);
+  margin-left: auto;
+}
+
+.itemSelected {
+  @include styles.neutral-600(background);
+  border-color: var(--colors-lime-500, #c6f135);
+  border-radius: var(--corner-radius-4, 4px);
+  border-width: 1px;
+  border-style: solid;
+  transition: 0.25s ease-in-out;
 }
