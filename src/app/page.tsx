@@ -1,5 +1,5 @@
 'use client'
-import { BaseCard } from '@/components/BaseCard'
+import { BaseCard } from '@/components/layout/base-card'
 import styles from './page.module.scss'
 import CurrencyButton from '@/features/currencies/components/currency-button/currency-button'
 

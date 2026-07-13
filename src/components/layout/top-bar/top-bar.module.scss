@@ -1,0 +1,39 @@
+@import '@/styles/_mixins.scss';
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  padding: var(--spacing-250) var(--spacing-300);
+  gap: var(--spacing-250);
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-250);
+  text-transform: uppercase;
+  @include text-preset-4;
+  color: var(--color-neutral-200);
+
+  @media (max-width: 768px) {
+    @include text-preset-6;
+  }
+
+  @media (max-width: 480px) {
+    @include text-preset-7;
+  }
+}
+
+.topBarRightItem {
+  text-wrap: wrap;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 100%;
+}
