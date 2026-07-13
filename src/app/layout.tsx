@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
+import { QueryProvider } from '@/lib/tanstack-query/query-provider'
 
 import './globals.css'
 
@@ -22,7 +23,9 @@ type RootLayoutProps = Readonly<{
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en-GB" className={`${jetBrainsMono.variable} dark`}>
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   )
 }
