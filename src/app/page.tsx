@@ -1,4 +1,5 @@
 'use client'
+import { BaseCard } from '@/components/BaseCard'
 import styles from './page.module.scss'
 import CurrencyButton from '@/features/currencies/components/currency-button/currency-button'
 
@@ -21,6 +22,9 @@ export default function HomePage() {
         currencies={DEV_CURRENCIES}
         onSelect={(code) => console.log(code)}
       />
+      <BaseCard title="Forex checker" level="level-2">
+        <p>Forex checker</p>
+      </BaseCard>
     </main>
   )
 }
