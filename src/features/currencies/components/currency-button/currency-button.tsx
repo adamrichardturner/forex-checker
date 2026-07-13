@@ -9,6 +9,7 @@ import CurrencyFlag from './currency-flag'
 import { POPULAR_CURRENCIES } from '../../model/currency.constants'
 import type { CurrenciesResponse } from '../../model/currency.types'
 import styles from './currency-button.module.scss'
+import { Separator } from '@/components/ui/separator'
 
 type CurrencyButtonProps = {
   selectedCode: string
@@ -58,11 +59,12 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
         </div>
         <div className={styles.list}>
           {filteredPopular.length > 0 && (
-            <section>
+            <section className={styles.sectionGroup}>
               <p className={styles.sectionHeader}>
                 <span>POPULAR</span>
                 <span>{filteredPopular.length}</span>
               </p>
+              <Separator className={styles.sectionSeparator} />
               {filteredPopular.map((code) => (
                 <CurrencyItem
                   key={code}
@@ -75,11 +77,12 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
             </section>
           )}
           {filteredOther.length > 0 && (
-            <section>
+            <section className={styles.sectionGroup}>
               <p className={styles.sectionHeader}>
                 <span>OTHER CURRENCIES</span>
                 <span>{filteredOther.length}</span>
               </p>
+              <Separator className={styles.sectionSeparator} />
               {filteredOther.map((code) => (
                 <CurrencyItem
                   key={code}
