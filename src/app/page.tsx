@@ -5,7 +5,7 @@ import {
   latestRatesQueryOptions,
 } from '@/features/currencies/api/query-options'
 import { Dashboard } from '@/features/currencies/components/dashboard'
-import { CurrenciesResponse, Currency } from '@/features/currencies/model/currency.types'
+import { Currency, FrankfurterLatestRates } from '@/features/currencies/model/currency.types'
 import { TopBar } from '@/components/layout/top-bar'
 
 export default async function HomePage() {
@@ -15,6 +15,11 @@ export default async function HomePage() {
     queryClient.prefetchQuery(latestRatesQueryOptions('EUR')),
   ])
   const currencies: Currency[] = await queryClient.fetchQuery(currenciesQueryOptions)
+  const latestRates: FrankfurterLatestRates = await queryClient.fetchQuery(
+    latestRatesQueryOptions('EUR'),
+  )
+
+  console.log(latestRates)
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

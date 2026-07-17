@@ -9,4 +9,7 @@ export const currencyKeys = {
 
   timeSeries: (base: string, quote: string, start: string, end: string) =>
     [...currencyKeys.rates, 'series', base, quote, start, end] as const,
+
+  ticker: (base: string, start: string, end: string) =>
+    [...currencyKeys.rates, 'ticker', base, start, end] as const,
 }

@@ -4,6 +4,7 @@ import { getLatestRates } from './get-latest-rates'
 import { getTimeSeries } from './get-time-series'
 import { currencyKeys } from './query-keys'
 import { msUntilNextEcbPublish } from '../utils/ecb-schedule'
+import { getTickerRates } from './get-ticker-rates'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -48,4 +49,17 @@ export const timeSeriesQueryOptions = ({
       }),
     staleTime: includesToday ? msUntilNextEcbPublish() : Infinity,
     gcTime: 7 * DAY_MS,
+  })
+
+export const tickerRatesQueryOptions = (base: string, start: string, end: string) =>
+  queryOptions({
+    queryKey: currencyKeys.ticker(base, start, end),
+    queryFn: () =>
+      getTickerRates({
+        base,
+        start,
+        end,
+      }),
+    staleTime: msUntilNextEcbPublish(),
+    gcTime: DAY_MS,
   })
