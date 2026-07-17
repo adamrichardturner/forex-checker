@@ -7,24 +7,27 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import CurrencyFlag from './currency-flag'
 import { POPULAR_CURRENCIES } from '../../model/currency.constants'
-import type { CurrenciesResponse } from '../../model/currency.types'
+import type { Currency } from '../../model/currency.types'
 import styles from './currency-button.module.scss'
 import { Separator } from '@/components/ui/separator'
 
+const FILTERED_CURRENCIES_LIMIT = 4 as const
+
 type CurrencyButtonProps = {
-  selectedCode: string
-  currencies: CurrenciesResponse
-  onSelect: (code: string) => void
+  selectedCode: Currency['iso_code'] | null
+  currencyMap: Map<Currency['iso_code'], Currency>
+  onSelect: (code: Currency['iso_code']) => void
 }
 
-const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onSelect }) => {
+const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencyMap, onSelect }) => {
   const [search, setSearch] = useState('')
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
   }
 
-  const allCodes = Object.keys(currencies)
+  const allCodes: Currency['iso_code'][] = Array.from(currencyMap.keys())
+
   const popularCodes = POPULAR_CURRENCIES.filter((code) => allCodes.includes(code))
   const otherCodes = allCodes.filter(
     (code) => !(POPULAR_CURRENCIES as readonly string[]).includes(code),
@@ -33,12 +36,14 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
   const matches = (code: string) => {
     const term = search.toLowerCase()
     return (
-      code.toLowerCase().includes(term) || (currencies[code] ?? '').toLowerCase().includes(term)
+      code.toLowerCase().includes(term) ||
+      (currencyMap.get(code)?.name ?? '').toLowerCase().includes(term)
     )
   }
 
   const filteredPopular = popularCodes.filter(matches)
-  const filteredOther = otherCodes.filter(matches)
+  const filteredOther = otherCodes.filter(matches).slice(0, FILTERED_CURRENCIES_LIMIT)
+  const filteredOtherCurrenciesCount = otherCodes.length - filteredPopular.length
 
   return (
     <Popover>
@@ -68,7 +73,7 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
               {filteredPopular.map((code) => (
                 <CurrencyItem
                   key={code}
-                  currencies={currencies}
+                  currencyMap={currencyMap}
                   currencyCode={code}
                   selectedCode={selectedCode}
                   onSelectCode={onSelect}
@@ -80,13 +85,13 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
             <section className={styles.sectionGroup}>
               <p className={styles.sectionHeader}>
                 <span>OTHER CURRENCIES</span>
-                <span>{filteredOther.length}</span>
+                <span>{filteredOtherCurrenciesCount}</span>
               </p>
               <Separator className={styles.sectionSeparator} />
-              {filteredOther.map((code) => (
+              {filteredOther.map((code: Currency['iso_code']) => (
                 <CurrencyItem
                   key={code}
-                  currencies={currencies}
+                  currencyMap={currencyMap}
                   currencyCode={code}
                   selectedCode={selectedCode}
                   onSelectCode={onSelect}
@@ -103,13 +108,18 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
 export default CurrencyButton
 
 interface CurrencyItemProps {
-  currencies: CurrenciesResponse
-  currencyCode: string
-  selectedCode: string
-  onSelectCode: (code: string) => void
+  currencyMap: Map<Currency['iso_code'], Currency>
+  currencyCode: Currency['iso_code']
+  selectedCode: Currency['iso_code'] | null
+  onSelectCode: (code: Currency['iso_code']) => void
 }
 
-function CurrencyItem({ currencies, currencyCode, selectedCode, onSelectCode }: CurrencyItemProps) {
+function CurrencyItem({
+  currencyMap,
+  currencyCode,
+  selectedCode,
+  onSelectCode,
+}: CurrencyItemProps) {
   return (
     <button
       className={`${styles.item}${currencyCode === selectedCode ? ` ${styles.itemSelected}` : ''}`}
@@ -117,7 +127,7 @@ function CurrencyItem({ currencies, currencyCode, selectedCode, onSelectCode }: 
     >
       <CurrencyFlag currencyCode={currencyCode} />
       <span className={styles.itemCode}>{currencyCode}</span>
-      <span className={styles.itemLabel}>{currencies[currencyCode]}</span>
+      <span className={styles.itemLabel}>{currencyMap.get(currencyCode)?.name ?? ''}</span>
       {currencyCode === selectedCode && <Check className={styles.itemCheck} />}
     </button>
   )

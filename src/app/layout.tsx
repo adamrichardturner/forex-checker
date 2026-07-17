@@ -3,8 +3,6 @@ import { JetBrains_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
 import { QueryProvider } from '@/lib/tanstack-query/query-provider'
 
-import { TopBar } from '@/components/layout/top-bar'
-
 import './globals.css'
 
 const jetBrainsMono = JetBrains_Mono({
@@ -26,10 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en-GB" className={`${jetBrainsMono.variable} dark`}>
       <body>
-        <QueryProvider>
-          <TopBar currencyCount={0} />
-          {children}
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   )

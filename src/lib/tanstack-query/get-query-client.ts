@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { QueryClient, defaultShouldDehydrateQuery, environmentManager } from '@tanstack/react-query'
 
 function makeQueryClient(): QueryClient {

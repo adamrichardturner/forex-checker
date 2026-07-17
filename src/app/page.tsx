@@ -1,30 +1,25 @@
-'use client'
-import { BaseCard } from '@/components/layout/base-card'
-import styles from './page.module.scss'
-import CurrencyButton from '@/features/currencies/components/currency-button/currency-button'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+import { getQueryClient } from '@/lib/tanstack-query/get-query-client'
+import {
+  currenciesQueryOptions,
+  latestRatesQueryOptions,
+} from '@/features/currencies/api/query-options'
+import { Dashboard } from '@/features/currencies/components/dashboard'
+import { CurrenciesResponse, Currency } from '@/features/currencies/model/currency.types'
+import { TopBar } from '@/components/layout/top-bar'
 
-const DEV_CURRENCIES = {
-  USD: 'US Dollar',
-  EUR: 'Euro',
-  GBP: 'British Pound',
-  AED: 'UAE Dirham',
-  ARS: 'Argentine Peso',
-  AUD: 'Australian Dollar',
-  // ... add as many as you want
-}
+export default async function HomePage() {
+  const queryClient = getQueryClient()
+  await Promise.all([
+    queryClient.prefetchQuery(currenciesQueryOptions),
+    queryClient.prefetchQuery(latestRatesQueryOptions('EUR')),
+  ])
+  const currencies: Currency[] = await queryClient.fetchQuery(currenciesQueryOptions)
 
-export default function HomePage() {
   return (
-    <main className={styles.page}>
-      <h1>Forex checker</h1>
-      <CurrencyButton
-        selectedCode="USD"
-        currencies={DEV_CURRENCIES}
-        onSelect={(code) => console.log(code)}
-      />
-      <BaseCard title="Forex checker" level="level-2">
-        <p>Forex checker</p>
-      </BaseCard>
-    </main>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <TopBar currencyCount={currencies.length} />
+      <Dashboard currencies={currencies} />
+    </HydrationBoundary>
   )
 }

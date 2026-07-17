@@ -1,6 +1,6 @@
 import { FRANKFURTER_BASE_URL } from '../model/currency.constants'
-import { frankfurterTimeSeriesSchema } from './frankfurter.schemas'
-import type { FrankfurterTimeSeries } from './frankfurter.schemas'
+import type { FrankfurterTimeSeries } from '../model/currency.types'
+import { frankfurterTimeSeriesSchema } from '../model/frankfurter.schemas'
 
 type TimeSeriesArgs = {
   base: string
@@ -15,11 +15,20 @@ export async function getTimeSeries({
   start,
   end,
 }: TimeSeriesArgs): Promise<FrankfurterTimeSeries> {
-  const url = `${FRANKFURTER_BASE_URL}/${start}..${end}?from=${base}&to=${quote}`
-  const response = await fetch(url)
+  const params = new URLSearchParams({
+    base,
+    quotes: quote,
+    from: start,
+    to: end,
+  })
+
+  const response = await fetch(`${FRANKFURTER_BASE_URL}/rates?${params.toString()}`)
+
   if (!response.ok) {
-    throw new Error(`Failed to fetch time series: ${response.statusText}`)
+    throw new Error(`Failed to fetch time series: ${response.status} ${response.statusText}`)
   }
+
   const data: unknown = await response.json()
+
   return frankfurterTimeSeriesSchema.parse(data)
 }
