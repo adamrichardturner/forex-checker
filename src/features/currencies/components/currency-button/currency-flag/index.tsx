@@ -2,14 +2,15 @@ import type { FC, SVGProps } from 'react'
 import * as Flags from 'country-flag-icons/react/1x1'
 import { CURRENCY_FLAG_MAP } from '../../../model/currency-flag-map'
 import styles from './currency-flag.module.scss'
+import { Currency } from '@/features/currencies'
 
 type CurrencyFlagProps = {
-  currencyCode: string
+  currencyCode: Currency['iso_code'] | null
   className?: string
 }
 
 const CurrencyFlag: FC<CurrencyFlagProps> = ({ currencyCode, className }) => {
-  const countryCode = CURRENCY_FLAG_MAP[currencyCode]
+  const countryCode = currencyCode ? CURRENCY_FLAG_MAP[currencyCode] : null
   const FlagSvg = countryCode
     ? (Flags as Record<string, FC<SVGProps<SVGSVGElement>>>)[countryCode]
     : null

@@ -1,6 +1,18 @@
-import type { z } from 'zod'
-import type { currenciesResponseSchema, currencySchema } from './currency.schemas'
+import { z } from 'zod'
+import {
+  frankfurterCurrenciesSchema,
+  frankfurterCurrencySchema,
+  frankfurterLatestRatesSchema,
+  frankfurterRateSchema,
+  frankfurterTimeSeriesSchema,
+} from '../api/frankfurter.schemas'
 
-export type CurrencyCode = string
-export type CurrenciesResponse = z.infer<typeof currenciesResponseSchema>
-export type Currency = z.infer<typeof currencySchema>
+export type Currency = z.infer<typeof frankfurterCurrencySchema>
+
+export type CurrenciesResponse = z.infer<typeof frankfurterCurrenciesSchema>
+
+export type FrankfurterRate = z.infer<typeof frankfurterRateSchema>
+
+export type FrankfurterLatestRates = z.infer<typeof frankfurterLatestRatesSchema>
+
+export type FrankfurterTimeSeries = z.infer<typeof frankfurterTimeSeriesSchema>

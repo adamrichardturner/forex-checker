@@ -1,6 +1,6 @@
-@use 'index' as styles;
+@use 'mixins' as styles;
 
-.page {
+.dashboard {
   display: grid;
   min-block-size: 100svh;
   place-items: center;

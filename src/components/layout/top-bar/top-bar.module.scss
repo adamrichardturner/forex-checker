@@ -1,4 +1,4 @@
-@import '@/styles/_mixins.scss';
+@use 'mixins' as styles;
 
 .topBar {
   display: flex;
@@ -19,15 +19,15 @@
   align-items: center;
   gap: var(--spacing-250);
   text-transform: uppercase;
-  @include text-preset-4;
+  @include styles.text-preset-4;
   color: var(--color-neutral-200);
 
   @media (max-width: 768px) {
-    @include text-preset-6;
+    @include styles.text-preset-6;
   }
 
   @media (max-width: 480px) {
-    @include text-preset-7;
+    @include styles.text-preset-7;
   }
 }
 
