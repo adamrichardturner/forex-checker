@@ -1,12 +1,21 @@
 @use 'mixins' as styles;
 
 .dashboard {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   min-block-size: 100svh;
-  place-items: center;
-  padding: clamp(1rem, 5vw, 4rem);
+  width: 100%;
 
   &:focus-visible {
     @include styles.focus-ring;
   }
+}
+
+.dashboardContent {
+  display: grid;
+  flex: 1 1 auto;
+  place-content: start center;
+  gap: var(--spacing-300, 24px);
+  width: 100%;
+  padding: clamp(1rem, 5vw, 4rem);
 }

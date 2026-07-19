@@ -1,11 +1,12 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+import { dehydrate } from '@tanstack/react-query'
 import { getQueryClient } from '@/lib/tanstack-query/get-query-client'
+import { HydrationBoundary } from '@/lib/tanstack-query/hydration-boundary'
 import {
   currenciesQueryOptions,
   latestRatesQueryOptions,
 } from '@/features/currencies/api/query-options'
 import { Dashboard } from '@/features/currencies/components/dashboard'
-import { Currency, FrankfurterLatestRates } from '@/features/currencies/model/currency.types'
+import { Currency } from '@/features/currencies/model/currency.types'
 import { TopBar } from '@/components/layout/top-bar'
 
 export default async function HomePage() {
@@ -15,11 +16,6 @@ export default async function HomePage() {
     queryClient.prefetchQuery(latestRatesQueryOptions('EUR')),
   ])
   const currencies: Currency[] = await queryClient.fetchQuery(currenciesQueryOptions)
-  const latestRates: FrankfurterLatestRates = await queryClient.fetchQuery(
-    latestRatesQueryOptions('EUR'),
-  )
-
-  console.log(latestRates)
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

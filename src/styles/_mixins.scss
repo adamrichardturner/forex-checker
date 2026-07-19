@@ -15,6 +15,33 @@
   clip-path: inset(50%);
 }
 
+@mixin text-preset-1 {
+  font-family: 'JetBrains Mono';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%;
+  /* 10px */
+}
+
+@mixin text-preset-2 {
+  font-family: 'JetBrains Mono';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%;
+  /* 6px */
+}
+
+@mixin text-preset-3 {
+  font-family: 'JetBrains Mono';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%;
+  /* 8px */
+}
+
 @mixin text-preset-4 {
   font-family: 'JetBrains Mono';
   font-size: 14px;

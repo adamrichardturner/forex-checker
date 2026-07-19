@@ -1,6 +1,12 @@
-export type RatesLookup = Readonly<Record<string, number>>
+import { Currency } from '../model/currency.types'
 
-export function crossRate(rates: RatesLookup, base: string, quote: string): number {
+export type RatesLookup = Readonly<Record<Currency['iso_code'], number>>
+
+export function crossRate(
+  rates: RatesLookup,
+  base: Currency['iso_code'],
+  quote: Currency['iso_code'],
+): number {
   if (base === quote) {
     return 1
   }
@@ -20,14 +26,14 @@ export function crossRate(rates: RatesLookup, base: string, quote: string): numb
 }
 
 export function toRatesLookup(
-  ecbBase: string,
+  ecbBase: Currency['iso_code'],
   rows: ReadonlyArray<{
-    base: string
-    quote: string
+    base: Currency['iso_code']
+    quote: Currency['iso_code']
     rate: number
   }>,
 ): RatesLookup {
-  const rates: Record<string, number> = {
+  const rates: Record<Currency['iso_code'], number> = {
     [ecbBase]: 1,
   }
 
