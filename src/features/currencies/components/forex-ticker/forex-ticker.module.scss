@@ -1,0 +1,145 @@
+@use 'mixins' as styles;
+
+.forexTicker {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  background: var(--color-neutral-700, #171719);
+  overflow: hidden;
+
+  @media (max-width: 480px) {
+    height: 32px;
+  }
+}
+
+.forexTickerLabel {
+  z-index: 1;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--spacing-100, 8px);
+  padding-inline: var(--spacing-150, 12px) var(--spacing-200, 16px);
+  background: var(--color-lime-500, #cef739);
+  color: var(--color-neutral-900, #0a0a0a);
+  @include styles.text-preset-5;
+
+  @media (max-width: 768px) {
+    @include styles.text-preset-6;
+  }
+
+  @media (max-width: 480px) {
+    @include styles.text-preset-7;
+  }
+
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.forexTickerDot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.forexTickerViewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 12px,
+    #000 calc(100% - 12px),
+    transparent 100%
+  );
+}
+
+.forexTickerTrack {
+  display: flex;
+  width: max-content;
+  min-height: 100%;
+  align-items: stretch;
+  will-change: transform;
+}
+
+.forexTickerItem {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--spacing-125, 10px);
+  padding-inline: var(--spacing-250, 0px);
+  border-right: 1px solid var(--color-neutral-400, #3d3d3d);
+  white-space: nowrap;
+  @include styles.text-preset-5;
+
+  @media (max-width: 768px) {
+    @include styles.text-preset-6;
+  }
+
+  @media (max-width: 480px) {
+    @include styles.text-preset-7;
+  }
+}
+
+.forexTickerPair {
+  color: var(--color-neutral-200, #9d9d9d);
+  text-transform: uppercase;
+}
+
+.forexTickerRate {
+  color: var(--color-neutral-50, #ffffff);
+  font-weight: 600;
+}
+
+.forexTickerChange {
+  font-weight: 500;
+}
+
+.forexTickerChangeUp {
+  color: var(--color-green-500, #42eb05);
+}
+
+.forexTickerChangeDown {
+  color: var(--color-red-500, #ff4141);
+}
+
+.forexTickerChangeFlat {
+  color: var(--color-neutral-200, #9d9d9d);
+}
+
+.forexTickerStatus {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 42px;
+  padding-inline: var(--spacing-200, 16px);
+  background: var(--color-neutral-500, #2e2e2e);
+  border-block: 1px solid var(--color-neutral-400, #3d3d3d);
+  color: var(--color-neutral-200, #9d9d9d);
+  @include styles.text-preset-5;
+
+  @media (max-width: 768px) {
+    @include styles.text-preset-6;
+  }
+
+  @media (max-width: 480px) {
+    @include styles.text-preset-7;
+  }
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forexTickerTrack {
+    transform: none !important;
+    animation: none !important;
+  }
+}

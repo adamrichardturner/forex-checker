@@ -7,6 +7,10 @@
   align-self: stretch;
   padding: var(--spacing-250) var(--spacing-300);
   gap: var(--spacing-250);
+
+  @media (max-width: 480px) {
+    padding: var(--spacing-200) var(--spacing-200);
+  }
 }
 
 .topBarLeft {

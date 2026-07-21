@@ -86,3 +86,18 @@ export function rangeToDates(range: RangePreset, now = new Date()): DateRange {
     includesToday: true,
   }
 }
+
+export function getTickerDateRange(now = new Date()): {
+  start: string
+  end: string
+} {
+  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+
+  const start = new Date(end)
+  start.setUTCDate(start.getUTCDate() - 7)
+
+  return {
+    start: start.toISOString().slice(0, 10),
+    end: end.toISOString().slice(0, 10),
+  }
+}

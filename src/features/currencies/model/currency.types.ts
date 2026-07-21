@@ -5,7 +5,7 @@ import {
   frankfurterLatestRatesSchema,
   frankfurterRateSchema,
   frankfurterTimeSeriesSchema,
-} from '../api/frankfurter.schemas'
+} from './frankfurter.schemas'
 
 export type Currency = z.infer<typeof frankfurterCurrencySchema>
 
