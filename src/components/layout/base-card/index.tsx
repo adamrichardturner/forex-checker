@@ -10,9 +10,11 @@ interface BaseCardProps {
 export function BaseCard({ title, children, level = 'level-1' }: BaseCardProps) {
   return (
     <Card size="default" level={level} className={styles.card}>
-      <CardHeader>
-        <CardTitle className={styles.cardTitle}>{title}</CardTitle>
-      </CardHeader>
+      {title && (
+        <CardHeader>
+          <CardTitle className={styles.cardTitle}>{title}</CardTitle>
+        </CardHeader>
+      )}
       <CardContent className={styles.cardContent}>{children}</CardContent>
     </Card>
   )

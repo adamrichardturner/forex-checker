@@ -5,7 +5,11 @@ import CurrencyButton from './currency-button'
 describe('CurrencyButton', () => {
   it('renders the currency code and label', () => {
     render(
-      <CurrencyButton selectedCode="USD" currencies={{ USD: 'US Dollar' }} onSelect={() => {}} />,
+      <CurrencyButton
+        selectedCode="USD"
+        currencies={[{ iso_code: 'USD', name: 'US Dollar' }]}
+        onSelect={() => {}}
+      />,
     )
     expect(screen.getByText('USD')).toBeTruthy()
     expect(screen.getByText('US Dollar')).toBeTruthy()

@@ -3,15 +3,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { tickerRatesQueryOptions } from '../api/query-options'
 import { TICKER_PAIRS } from '../model/ticker.constants'
-import type { FrankfurterTimeSeries } from '../model/currency.types'
+import type { LatestRatesTimeSeries } from '../model/currency.types'
 import type { TickerItem } from '../model/currency-ticker.types'
 import { tryCrossRate, toRatesLookup, type RatesLookup } from '../utils/cross-rate'
 import { getTickerDateRange } from '../utils/date-range'
 
 const ECB_BASE = 'EUR'
 
-function groupRatesByDate(rows: FrankfurterTimeSeries): Record<string, RatesLookup> {
-  const rowsByDate: Record<string, FrankfurterTimeSeries> = {}
+function groupRatesByDate(rows: LatestRatesTimeSeries): Record<string, RatesLookup> {
+  const rowsByDate: Record<string, LatestRatesTimeSeries> = {}
 
   for (const row of rows) {
     const existingRows = rowsByDate[row.date] ?? []
@@ -78,7 +78,7 @@ function resolveCurrentDate(
   return dates.at(-1) ?? null
 }
 
-function toTickerItems(rows: FrankfurterTimeSeries): TickerItem[] {
+function toTickerItems(rows: LatestRatesTimeSeries): TickerItem[] {
   const ratesByDate = groupRatesByDate(rows)
   const dates = Object.keys(ratesByDate).sort((a, b) => a.localeCompare(b))
   const currentDate = resolveCurrentDate(dates, ratesByDate)
