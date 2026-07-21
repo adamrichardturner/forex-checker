@@ -2,11 +2,11 @@ import { Currency } from '../model/currency.types'
 
 export type RatesLookup = Readonly<Record<Currency['iso_code'], number>>
 
-export function crossRate(
+export function tryCrossRate(
   rates: RatesLookup,
   base: Currency['iso_code'],
   quote: Currency['iso_code'],
-): number {
+): number | null {
   if (base === quote) {
     return 1
   }
@@ -14,15 +14,26 @@ export function crossRate(
   const baseRate = rates[base]
   const quoteRate = rates[quote]
 
-  if (baseRate === undefined) {
-    throw new Error(`Missing rate for ${base}`)
-  }
-
-  if (quoteRate === undefined) {
-    throw new Error(`Missing rate for ${quote}`)
+  if (baseRate === undefined || quoteRate === undefined) {
+    return null
   }
 
   return quoteRate / baseRate
+}
+
+export function crossRate(
+  rates: RatesLookup,
+  base: Currency['iso_code'],
+  quote: Currency['iso_code'],
+): number {
+  const rate = tryCrossRate(rates, base, quote)
+
+  if (rate === null) {
+    const missing = rates[base] === undefined ? base : quote
+    throw new Error(`Missing rate for ${missing}`)
+  }
+
+  return rate
 }
 
 export function toRatesLookup(

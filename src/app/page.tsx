@@ -8,6 +8,7 @@ import {
 import { Dashboard } from '@/features/currencies/components/dashboard'
 import { Currency } from '@/features/currencies/model/currency.types'
 import { TopBar } from '@/components/layout/top-bar'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export default async function HomePage() {
   const queryClient = getQueryClient()
@@ -19,6 +20,7 @@ export default async function HomePage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <ReactQueryDevtools />
       <TopBar currencyCount={currencies.length} />
       <Dashboard currencies={currencies} />
     </HydrationBoundary>
