@@ -1,0 +1,39 @@
+@use 'mixins' as styles;
+
+.rateChecker {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.rateCheckerTitle {
+  @include styles.text-preset-2;
+
+  color: var(--color-neutral-50, #ffffff);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.rateCheckerCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  background-color: var(--color-neutral-600);
+  border: 1px solid var(--color-neutral-500);
+  border-radius: var(--corner-radius-16, 16px);
+}
+
+.rateCheckerCardInput {
+  background-color: transparent;
+  border: none;
+  outline: none;
+
+  &:focus,
+  &:active,
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    border: none;
+  }
+}

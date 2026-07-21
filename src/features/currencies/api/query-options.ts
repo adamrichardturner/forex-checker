@@ -5,6 +5,7 @@ import { getTimeSeries } from './get-time-series'
 import { currencyKeys } from './query-keys'
 import { msUntilNextEcbPublish } from '../utils/ecb-schedule'
 import { getTickerRates } from './get-ticker-rates'
+import { LatestRatesResponse } from '../model/currency.types'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -63,3 +64,16 @@ export const tickerRatesQueryOptions = (base: string, start: string, end: string
     staleTime: msUntilNextEcbPublish(),
     gcTime: DAY_MS,
   })
+
+export const latestExchangeRatesPairQueryOptions = (base: string, quote: string) =>
+  queryOptions({
+    queryKey: ['latest-exchange-rates-pair', base, quote],
+    queryFn: () => getLatestExchangeRatesPair(base, quote),
+    staleTime: msUntilNextEcbPublish(),
+    gcTime: DAY_MS,
+  })
+
+export const getLatestExchangeRatesPair = async (base: string, quote: string) => {
+  const [baseRate, quoteRate] = await Promise.all([getLatestRates(base), getLatestRates(quote)])
+  return [baseRate, quoteRate]
+}
