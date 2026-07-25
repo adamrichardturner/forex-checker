@@ -4,7 +4,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-200);
+  gap: var(--spacing-250);
 }
 
 .rateCheckerTitle {
@@ -15,19 +15,64 @@
   text-transform: uppercase;
 }
 
-.rateCheckerCard {
+.rateCheckerBaseCard {
+  padding: 0;
+}
+
+.rateCheckerBody {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-100);
+}
+
+.rateCheckerFooter {
+  border-top: 1px dashed var(--colors-neutral-500, #2e2e2e);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-200) var(--spacing-250);
+}
+
+.rateCheckerPanels {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-250);
+}
+
+.rateCheckerCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-250);
   background-color: var(--color-neutral-600);
   border: 1px solid var(--color-neutral-500);
   border-radius: var(--corner-radius-16, 16px);
+  padding: var(--spacing-250);
+  min-width: 0;
+}
+
+.rateCheckerCardTitle {
+  @include styles.text-preset-4;
+  color: var(--colors-neutral-100, #c6c6c6);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.rateCheckerCardInputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-200);
 }
 
 .rateCheckerCardInput {
   background-color: transparent;
   border: none;
   outline: none;
+  padding: 0;
+  min-width: 0;
+  @include styles.text-preset-1;
+  color: var(--colors-neutral-50, #fff);
 
   &:focus,
   &:active,
@@ -35,5 +80,47 @@
   &:focus-visible {
     outline: none;
     border: none;
+  }
+}
+
+.rateCheckerReceiveAmount {
+  margin: 0;
+  min-width: 0;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  @include styles.text-preset-1;
+  color: var(--color-lime-500, #cef739);
+}
+
+.rateCheckerSwapButton {
+  flex-shrink: 0;
+  border-color: var(--color-neutral-400);
+  background-color: var(--color-neutral-600);
+  color: var(--color-neutral-50);
+  height: 48px;
+  width: 48px;
+
+  &:hover {
+    background-color: var(--color-neutral-500);
+    color: var(--color-neutral-50);
+  }
+}
+
+.rateCheckerRate {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-50);
+}
+
+@media (max-width: 768px) {
+  .rateCheckerPanels {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rateCheckerSwapButton {
+    align-self: center;
   }
 }

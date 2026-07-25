@@ -17,11 +17,17 @@
 
 @mixin text-preset-1 {
   font-family: 'JetBrains Mono';
-  font-size: 20px;
+  font-size: 40px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 100%;
+  /* 40px */
+  letter-spacing: -0.5px;
+
   /* 10px */
+  @media (max-width: 928px) {
+    font-size: 26px;
+  }
 }
 
 @mixin text-preset-2 {

@@ -2,6 +2,7 @@
 
 .card {
   width: 100%;
+  border-radius: var(--corner-radius-20, 20px);
 }
 
 .cardTitle {

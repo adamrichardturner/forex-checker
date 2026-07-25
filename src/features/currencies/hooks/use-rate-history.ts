@@ -2,11 +2,11 @@
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { timeSeriesQueryOptions } from '../api/query-options'
-import type { FrankfurterTimeSeries } from '../model/currency.types'
+import type { LatestRatesTimeSeries } from '../model/currency.types'
 import type { RangePreset, RateHistory } from '../model/rate-history.types'
 import { rangeToDates } from '../utils/date-range'
 
-function toHistory(series: FrankfurterTimeSeries, quote: string): RateHistory {
+function toHistory(series: LatestRatesTimeSeries, quote: string): RateHistory {
   const points = series
     .filter((item) => item.quote === quote)
     .map(({ date, rate }) => ({
