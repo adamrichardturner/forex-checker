@@ -29,14 +29,23 @@ type NavigationTabsProps = {
   formattedAmount: string
 }
 
+type NavigationTabBadge = {
+  count: number
+  isReady: boolean
+}
+
 type NavigationTabOption = {
   value: NavigationTab
   label: string
-  badgeCount?: number
+  badge?: NavigationTabBadge
 }
 
-function TabBadge({ count }: { count: number }) {
-  return <span className={styles.tabBadge}>{count}</span>
+function TabBadge({ count, isReady }: NavigationTabBadge) {
+  return (
+    <span className={styles.tabBadge} data-ready={isReady || undefined} aria-hidden={!isReady}>
+      {isReady ? count : null}
+    </span>
+  )
 }
 
 function isNavigationTab(value: string): value is NavigationTab {
@@ -44,15 +53,30 @@ function isNavigationTab(value: string): value is NavigationTab {
 }
 
 export function NavigationTabs({ base, quote, amount, formattedAmount }: NavigationTabsProps) {
-  const { pairs } = useFavouritePairsContext()
-  const { logs } = useConversionLogsContext()
+  const { pairs, isLoading: isFavouritesLoading } = useFavouritePairsContext()
+  const { logs, isLoading: isLogsLoading } = useConversionLogsContext()
   const [activeTab, setActiveTab] = useState<NavigationTab>('history')
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const tabOptions: NavigationTabOption[] = [
     { value: 'history', label: 'History' },
     { value: 'compare', label: 'Compare' },
-    { value: 'favourites', label: 'Favourites', badgeCount: pairs.length },
-    { value: 'log', label: 'Log', badgeCount: logs.length },
+    {
+      value: 'favourites',
+      label: 'Favourites',
+      badge: {
+        count: pairs.length,
+        isReady: !isFavouritesLoading,
+      },
+    },
+    {
+      value: 'log',
+      label: 'Log',
+      badge: {
+        count: logs.length,
+        isReady: !isLogsLoading,
+      },
+    },
   ]
 
   let activeOption = tabOptions[0]
@@ -71,40 +95,55 @@ export function NavigationTabs({ base, quote, amount, formattedAmount }: Navigat
     setActiveTab(value)
   }
 
+  const handleMobileTabChange = (value: string | number | null) => {
+    handleTabChange(value)
+    setIsMobileMenuOpen(false)
+  }
+
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange} className={styles.navigationTabs}>
       <TabsList className={styles.tabsList}>
         {tabOptions.map((option) => (
           <TabsTrigger key={option.value} value={option.value} className={styles.tabTrigger}>
-            {option.label}
-            {option.badgeCount !== undefined ? <TabBadge count={option.badgeCount} /> : null}
+            <span className={styles.tabTriggerLabel}>{option.label}</span>
+            {option.badge ? (
+              <TabBadge count={option.badge.count} isReady={option.badge.isReady} />
+            ) : null}
           </TabsTrigger>
         ))}
       </TabsList>
 
       <div className={styles.mobileDropdown}>
-        <DropdownMenu>
+        <DropdownMenu
+          open={isMobileMenuOpen}
+          onOpenChange={(open) => {
+            setIsMobileMenuOpen(open)
+          }}
+        >
           <DropdownMenuTrigger className={styles.mobileTrigger}>
             <span className={styles.mobileTriggerLabel}>
-              {activeOption.label}
-              {activeOption.badgeCount !== undefined ? (
-                <TabBadge count={activeOption.badgeCount} />
+              <span className={styles.tabTriggerLabel}>{activeOption.label}</span>
+              {activeOption.badge ? (
+                <TabBadge count={activeOption.badge.count} isReady={activeOption.badge.isReady} />
               ) : null}
             </span>
             <ChevronDown className={styles.mobileTriggerIcon} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className={styles.mobileMenuContent}>
-            <DropdownMenuRadioGroup value={activeTab} onValueChange={handleTabChange}>
+            <DropdownMenuRadioGroup value={activeTab} onValueChange={handleMobileTabChange}>
               {tabOptions.map((option) => (
                 <DropdownMenuRadioItem
                   key={option.value}
                   value={option.value}
                   className={styles.mobileMenuItem}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false)
+                  }}
                 >
                   <span className={styles.mobileMenuItemLabel}>
-                    {option.label}
-                    {option.badgeCount !== undefined ? (
-                      <TabBadge count={option.badgeCount} />
+                    <span className={styles.tabTriggerLabel}>{option.label}</span>
+                    {option.badge ? (
+                      <TabBadge count={option.badge.count} isReady={option.badge.isReady} />
                     ) : null}
                   </span>
                 </DropdownMenuRadioItem>

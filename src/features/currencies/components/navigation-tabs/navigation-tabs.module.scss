@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--spacing-100, 8px);
+  gap: var(--spacing-050);
   align-self: stretch;
   width: 100%;
   height: auto;
@@ -19,6 +19,12 @@
   border-radius: 0;
   border-bottom: 1px solid var(--colors-neutral-600, #202022);
   background: transparent;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @media (max-width: 768px) {
     display: none;
@@ -47,7 +53,7 @@
   &::after {
     content: '';
     position: absolute;
-    inset-inline: var(--spacing-200, 16px);
+    inset-inline: var(--spacing-150, 12px);
     inset-block-end: 0;
     inset-block-start: auto;
     width: auto;
@@ -77,18 +83,39 @@
   &[aria-selected='true']::after {
     opacity: 1;
   }
+
+  @media (max-width: 1024px) {
+    padding: 0 var(--spacing-150, 12px);
+  }
+}
+
+.tabTriggerLabel {
+  display: inline-block;
 }
 
 .tabBadge {
-  display: flex;
-  width: 20px;
+  display: inline-flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  min-width: 20px;
   height: 20px;
+  padding-inline: var(--spacing-025, 2px);
   justify-content: center;
   align-items: center;
   border-radius: var(--corner-radius-full, 999px);
   background: var(--colors-lime-800, #283300);
   color: var(--colors-lime-500, #cef739);
   @include styles.text-preset-6;
+  font-variant-numeric: tabular-nums;
+  visibility: hidden;
+
+  &:not([data-ready]) {
+    width: 20px;
+  }
+
+  &[data-ready] {
+    visibility: visible;
+  }
 }
 
 .tabContent {
@@ -181,4 +208,5 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-100, 8px);
+  min-width: 0;
 }
