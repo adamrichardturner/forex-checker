@@ -1,7 +1,7 @@
 'use client'
 
 import { useLayoutEffect, useRef, type ChangeEvent } from 'react'
-import { ArrowLeftRight } from 'lucide-react'
+import { ArrowLeftRight, ArrowUpDown } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { CurrencyButton } from '../..'
@@ -85,16 +85,31 @@ export function RateChecker() {
               </div>
             </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className={styles.rateCheckerSwapButton}
-              onClick={onSwapCurrencies}
-              aria-label="Swap send and receive currencies"
-            >
-              <ArrowLeftRight />
-            </Button>
+            <div className="hidden md:block">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className={styles.rateCheckerSwapButton}
+                onClick={onSwapCurrencies}
+                aria-label="Swap send and receive currencies"
+              >
+                <ArrowLeftRight />
+              </Button>
+            </div>
+
+            <div className="block flex w-full justify-center md:hidden">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className={styles.rateCheckerSwapButton}
+                onClick={onSwapCurrencies}
+                aria-label="Swap send and receive currencies"
+              >
+                <ArrowUpDown />
+              </Button>
+            </div>
 
             <div className={styles.rateCheckerCard}>
               <h3 className={styles.rateCheckerCardTitle}>Receive</h3>
