@@ -1,5 +1,14 @@
 'use client'
 
+import { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   useConversionLogsContext,
@@ -11,6 +20,8 @@ import { Favourites } from '../favourites'
 import { HistoryCharts } from '../history-charts'
 import styles from './navigation-tabs.module.scss'
 
+type NavigationTab = 'history' | 'compare' | 'favourites' | 'log'
+
 type NavigationTabsProps = {
   base: string
   quote: string
@@ -18,32 +29,90 @@ type NavigationTabsProps = {
   formattedAmount: string
 }
 
+type NavigationTabOption = {
+  value: NavigationTab
+  label: string
+  badgeCount?: number
+}
+
 function TabBadge({ count }: { count: number }) {
   return <span className={styles.tabBadge}>{count}</span>
+}
+
+function isNavigationTab(value: string): value is NavigationTab {
+  return value === 'history' || value === 'compare' || value === 'favourites' || value === 'log'
 }
 
 export function NavigationTabs({ base, quote, amount, formattedAmount }: NavigationTabsProps) {
   const { pairs } = useFavouritePairsContext()
   const { logs } = useConversionLogsContext()
+  const [activeTab, setActiveTab] = useState<NavigationTab>('history')
+
+  const tabOptions: NavigationTabOption[] = [
+    { value: 'history', label: 'History' },
+    { value: 'compare', label: 'Compare' },
+    { value: 'favourites', label: 'Favourites', badgeCount: pairs.length },
+    { value: 'log', label: 'Log', badgeCount: logs.length },
+  ]
+
+  let activeOption = tabOptions[0]
+  for (const option of tabOptions) {
+    if (option.value === activeTab) {
+      activeOption = option
+      break
+    }
+  }
+
+  const handleTabChange = (value: string | number | null) => {
+    if (typeof value !== 'string' || !isNavigationTab(value)) {
+      return
+    }
+
+    setActiveTab(value)
+  }
 
   return (
-    <Tabs defaultValue="history" className={styles.navigationTabs}>
+    <Tabs value={activeTab} onValueChange={handleTabChange} className={styles.navigationTabs}>
       <TabsList className={styles.tabsList}>
-        <TabsTrigger value="history" className={styles.tabTrigger}>
-          History
-        </TabsTrigger>
-        <TabsTrigger value="compare" className={styles.tabTrigger}>
-          Compare
-        </TabsTrigger>
-        <TabsTrigger value="favourites" className={styles.tabTrigger}>
-          Favourites
-          <TabBadge count={pairs.length} />
-        </TabsTrigger>
-        <TabsTrigger value="log" className={styles.tabTrigger}>
-          Log
-          <TabBadge count={logs.length} />
-        </TabsTrigger>
+        {tabOptions.map((option) => (
+          <TabsTrigger key={option.value} value={option.value} className={styles.tabTrigger}>
+            {option.label}
+            {option.badgeCount !== undefined ? <TabBadge count={option.badgeCount} /> : null}
+          </TabsTrigger>
+        ))}
       </TabsList>
+
+      <div className={styles.mobileDropdown}>
+        <DropdownMenu>
+          <DropdownMenuTrigger className={styles.mobileTrigger}>
+            <span className={styles.mobileTriggerLabel}>
+              {activeOption.label}
+              {activeOption.badgeCount !== undefined ? (
+                <TabBadge count={activeOption.badgeCount} />
+              ) : null}
+            </span>
+            <ChevronDown className={styles.mobileTriggerIcon} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className={styles.mobileMenuContent}>
+            <DropdownMenuRadioGroup value={activeTab} onValueChange={handleTabChange}>
+              {tabOptions.map((option) => (
+                <DropdownMenuRadioItem
+                  key={option.value}
+                  value={option.value}
+                  className={styles.mobileMenuItem}
+                >
+                  <span className={styles.mobileMenuItemLabel}>
+                    {option.label}
+                    {option.badgeCount !== undefined ? (
+                      <TabBadge count={option.badgeCount} />
+                    ) : null}
+                  </span>
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       <TabsContent value="history" className={styles.tabContent}>
         <HistoryCharts base={base} quote={quote} />
