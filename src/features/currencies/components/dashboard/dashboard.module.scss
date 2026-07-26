@@ -3,8 +3,10 @@
 .dashboard {
   display: flex;
   flex-direction: column;
-  min-block-size: 100svh;
   width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 
   &:focus-visible {
     @include styles.focus-ring;
@@ -12,10 +14,22 @@
 }
 
 .dashboardContent {
-  display: grid;
-  flex: 1 1 auto;
-  place-content: start center;
-  gap: var(--spacing-300, 24px);
   width: 100%;
-  padding: clamp(1rem, 5vw, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: var(--max-width-desktop);
+  padding: var(--spacing-600) var(--spacing-400);
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-600) var(--spacing-300);
+    gap: var(--spacing-500);
+    max-width: var(--max-width-tablet);
+  }
+
+  @media (max-width: 480px) {
+    padding: var(--spacing-400) var(--spacing-200);
+    max-width: var(--max-width-mobile);
+  }
 }

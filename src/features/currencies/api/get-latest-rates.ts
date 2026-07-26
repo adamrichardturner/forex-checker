@@ -1,8 +1,8 @@
 import { FRANKFURTER_BASE_URL } from '../model/currency.constants'
-import type { FrankfurterLatestRates } from '../model/currency.types'
+import type { LatestRatesResponse } from '../model/currency.types'
 import { frankfurterLatestRatesSchema } from '../model/frankfurter.schemas'
 
-export async function getLatestRates(base: string): Promise<FrankfurterLatestRates> {
+export async function getLatestRates(base: string): Promise<LatestRatesResponse> {
   const params = new URLSearchParams({
     base,
   })

@@ -11,10 +11,10 @@ type CardVarients = {
 
 const cardVarients: CardVarients = {
   default:
-    'p-[var(--spacing-250,20px)] [--card-spacing:var(--spacing-250,20px)] border-radius-(--corner-radius-16) group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card text-sm text-card-foreground has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl',
+    'p-[var(--spacing-250,20px)] [--card-spacing:var(--spacing-250,20px)] border-radius-(--corner-radius-16) group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl text-sm text-card-foreground has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl',
   levels: {
-    'level-1': 'background-(--color-neutral-600) border-width-1 border-color-(--color-neutral-600)',
-    'level-2': 'background-(--color-neutral-500)',
+    'level-1': 'bg-(--color-neutral-700) border-width-1 border-color-(--color-neutral-600)',
+    'level-2': 'bg-(--color-neutral-500)',
   },
 }
 
@@ -88,10 +88,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-footer"
-      className={cn(
-        'flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)',
-        className,
-      )}
+      className={cn('flex items-center rounded-b-xl border-t p-(--card-spacing)', className)}
       {...props}
     />
   )
