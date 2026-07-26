@@ -7,12 +7,43 @@
   gap: var(--spacing-250);
 }
 
+.rateCheckerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+}
+
 .rateCheckerTitle {
   @include styles.text-preset-2;
 
   color: var(--color-neutral-50, #ffffff);
   text-align: left;
   text-transform: uppercase;
+}
+
+.rateCheckerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-150);
+  flex-wrap: wrap;
+}
+
+.rateCheckerActionButton {
+  border-color: var(--color-neutral-400);
+  background-color: var(--color-neutral-600);
+  color: var(--color-neutral-50);
+
+  &:hover {
+    background-color: var(--color-neutral-500);
+    color: var(--color-neutral-50);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: var(--color-lime-500, #cef739);
+    color: var(--color-lime-500, #cef739);
+  }
 }
 
 .rateCheckerBaseCard {
