@@ -9,7 +9,8 @@
 
 .tabsList {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: flex-start;
   gap: var(--spacing-100, 8px);
   align-self: stretch;
   width: 100%;
@@ -89,12 +90,6 @@
 .tabContent {
   width: 100%;
   outline: none;
-}
-
-.comparePlaceholder {
-  margin: 0;
-  @include styles.text-preset-5;
-  color: var(--color-neutral-100, #c6c6c6);
 }
 
 @media (max-width: 768px) {

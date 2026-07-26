@@ -1,0 +1,153 @@
+@use 'mixins' as styles;
+
+.compare {
+  width: 100%;
+}
+
+.compareCard {
+  padding: 0;
+  overflow: hidden;
+}
+
+.compareHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+  padding: var(--spacing-200) var(--spacing-250);
+  border-bottom: 1px solid var(--color-neutral-500, #2e2e2e);
+}
+
+.compareHeaderLabel,
+.compareHeaderCount {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-200, #9d9d9d);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.compareHeaderEmphasis {
+  color: var(--color-neutral-50, #ffffff);
+}
+
+.compareList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.compareItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  padding: var(--spacing-200) var(--spacing-250);
+  border-bottom: 1px solid var(--color-neutral-500, #2e2e2e);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.compareIdentity {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-150);
+  min-width: 0;
+  flex: 1;
+}
+
+.compareFlag {
+  flex-shrink: 0;
+
+  :global(svg) {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+  }
+}
+
+.compareText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-050);
+  min-width: 0;
+}
+
+.compareCode {
+  margin: 0;
+  @include styles.text-preset-3;
+  color: var(--color-neutral-50, #ffffff);
+  text-transform: uppercase;
+}
+
+.compareName {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-200, #9d9d9d);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compareValues {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-050);
+  flex-shrink: 0;
+}
+
+.compareAmount {
+  margin: 0;
+  @include styles.text-preset-3;
+  color: var(--color-neutral-50, #ffffff);
+  font-variant-numeric: tabular-nums;
+}
+
+.compareRate {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-200, #9d9d9d);
+  font-variant-numeric: tabular-nums;
+}
+
+.compareFavouriteButton {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-color: var(--color-neutral-400, #3d3d3d);
+  background-color: var(--color-neutral-600, #202022);
+  color: var(--color-neutral-100, #c6c6c6);
+
+  &:hover {
+    background-color: var(--color-neutral-500, #2e2e2e);
+    color: var(--color-neutral-50, #ffffff);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: var(--color-lime-500, #cef739);
+    color: var(--color-lime-500, #cef739);
+  }
+}
+
+.compareStatus {
+  margin: 0;
+  padding: var(--spacing-250);
+  @include styles.text-preset-5;
+  color: var(--color-neutral-100, #c6c6c6);
+}
+
+@media (max-width: 480px) {
+  .compareItem {
+    gap: var(--spacing-150);
+    padding: var(--spacing-200);
+  }
+
+  .compareFavouriteButton {
+    width: 36px;
+    height: 36px;
+  }
+}

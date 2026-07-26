@@ -5,6 +5,7 @@ import {
   useConversionLogsContext,
   useFavouritePairsContext,
 } from '../../persistence/currency-persistence-provider'
+import { Compare } from '../compare'
 import { ConversionHistory } from '../conversion-history'
 import { Favourites } from '../favourites'
 import { HistoryCharts } from '../history-charts'
@@ -13,13 +14,15 @@ import styles from './navigation-tabs.module.scss'
 type NavigationTabsProps = {
   base: string
   quote: string
+  amount: number
+  formattedAmount: string
 }
 
 function TabBadge({ count }: { count: number }) {
   return <span className={styles.tabBadge}>{count}</span>
 }
 
-export function NavigationTabs({ base, quote }: NavigationTabsProps) {
+export function NavigationTabs({ base, quote, amount, formattedAmount }: NavigationTabsProps) {
   const { pairs } = useFavouritePairsContext()
   const { logs } = useConversionLogsContext()
 
@@ -47,7 +50,7 @@ export function NavigationTabs({ base, quote }: NavigationTabsProps) {
       </TabsContent>
 
       <TabsContent value="compare" className={styles.tabContent}>
-        <p className={styles.comparePlaceholder}>Compare view coming soon.</p>
+        <Compare base={base} quote={quote} amount={amount} formattedAmount={formattedAmount} />
       </TabsContent>
 
       <TabsContent value="favourites" className={styles.tabContent}>
