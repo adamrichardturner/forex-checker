@@ -57,7 +57,7 @@ function formatChangePct(value: number): string {
 }
 
 function formatAxisDate(date: string): string {
-  return DateTime.fromISO(date, { zone: 'utc' }).toFormat('MMM d')
+  return DateTime.fromISO(date, { zone: 'utc' }).toFormat('MMM d yyyy')
 }
 
 function formatTooltipDate(date: string): string {
@@ -144,7 +144,9 @@ function HistoryAreaChart({
           tickLine={false}
           axisLine={false}
           tickMargin={10}
-          minTickGap={32}
+          minTickGap={56}
+          interval="preserveStartEnd"
+          fontSize={10}
           tickFormatter={formatAxisDate}
         />
         <YAxis
