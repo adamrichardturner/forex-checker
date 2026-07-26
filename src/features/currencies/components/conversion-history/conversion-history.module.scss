@@ -1,0 +1,71 @@
+@use 'mixins' as styles;
+
+.conversionHistory {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-250);
+}
+
+.conversionHistoryTitle {
+  @include styles.text-preset-2;
+
+  color: var(--color-neutral-50, #ffffff);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.conversionHistoryBaseCard {
+  padding: var(--spacing-250);
+}
+
+.conversionHistoryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.conversionHistoryItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+  background-color: var(--color-neutral-600);
+  border: 1px solid var(--color-neutral-500);
+  border-radius: var(--corner-radius-16, 16px);
+  padding: var(--spacing-250);
+}
+
+.conversionHistoryItemMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  min-width: 0;
+}
+
+.conversionHistoryPair {
+  margin: 0;
+  @include styles.text-preset-3;
+  color: var(--color-neutral-50);
+}
+
+.conversionHistoryAmounts {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-lime-500, #cef739);
+}
+
+.conversionHistoryMeta {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-100, #c6c6c6);
+}
+
+.conversionHistoryEmpty {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-100, #c6c6c6);
+}

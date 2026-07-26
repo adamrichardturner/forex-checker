@@ -78,6 +78,14 @@ export function useCurrencyExchange() {
     ? `1 ${sendCurrency} = ${formatExchangeRate(conversion.rate)} ${receiveCurrency}`
     : ''
 
+  const canLogConversion =
+    Number.isFinite(debouncedSendAmount) &&
+    debouncedSendAmount > 0 &&
+    conversion?.rate !== undefined &&
+    Number.isFinite(conversion.rate) &&
+    conversion.converted !== undefined &&
+    Number.isFinite(conversion.converted)
+
   const onSwapCurrencies = useCallback(() => {
     const nextSendAmount =
       conversion?.converted !== undefined ? toSwapAmountInput(conversion.converted) : sendAmount
@@ -102,5 +110,14 @@ export function useCurrencyExchange() {
     onSetSendCurrency,
     onSetReceiveCurrency,
     onSwapCurrencies,
+    canLogConversion,
+    conversionSnapshot:
+      canLogConversion && conversion?.converted !== undefined && conversion.rate !== undefined
+        ? {
+            sendAmount: debouncedSendAmount,
+            receiveAmount: conversion.converted,
+            rate: conversion.rate,
+          }
+        : null,
   }
 }
