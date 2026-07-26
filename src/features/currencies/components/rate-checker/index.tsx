@@ -252,11 +252,15 @@ export function RateChecker({
                   data-active={!isFavouritesLoading && pairIsFavourite ? true : undefined}
                 >
                   <span className={styles.rateCheckerButtonLabel}>
-                    <Star />
+                    <span className={styles.rateCheckerButtonLabelIcon}>
+                      <Star />
+                    </span>
                     Favourite
                   </span>
                   <span className={styles.rateCheckerButtonLabelActive}>
-                    <Star fill="currentColor" />
+                    <span className={styles.rateCheckerButtonLabelIcon}>
+                      <Star fill="currentColor" />
+                    </span>
                     Favourited
                   </span>
                 </span>

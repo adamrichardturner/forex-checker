@@ -14,6 +14,7 @@ import { useRateHistory } from '../../hooks/use-rate-history'
 import type { RangePreset, RateHistoryPoint } from '../../model/rate-history.types'
 import { formatExchangeRate } from '../../utils/amount-input'
 import styles from './history-charts.module.scss'
+import { Button } from '@/components/ui/button'
 
 const RANGE_PRESETS: RangePreset[] = ['1D', '1W', '1M', '3M', '1Y', '5Y']
 
@@ -255,7 +256,7 @@ export function HistoryCharts({ base, quote }: HistoryChartsProps) {
 
         <div className={styles.historyChartsRanges} role="group" aria-label="History range">
           {RANGE_PRESETS.map((preset) => (
-            <button
+            <Button
               key={preset}
               type="button"
               className={styles.historyChartsRangeButton}
@@ -265,7 +266,7 @@ export function HistoryCharts({ base, quote }: HistoryChartsProps) {
               }}
             >
               {preset}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

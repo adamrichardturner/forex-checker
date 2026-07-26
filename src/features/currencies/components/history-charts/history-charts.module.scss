@@ -49,7 +49,7 @@
 }
 
 .historyChartsStatValuePositive {
-  color: var(--color-lime-500, #cef739);
+  color: var(--colors-green-500, #42eb05);
 }
 
 .historyChartsStatValueNegative {
@@ -60,21 +60,21 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-025);
-  padding: var(--spacing-025);
-  border-radius: var(--corner-radius-full, 999px);
+  border-radius: var(--corner-radius-8, 8px);
   background: var(--color-neutral-700, #171719);
-  border: 1px solid var(--color-neutral-500, #2e2e2e);
+  padding: var(--spacing-025, 2px);
 }
 
 .historyChartsRangeButton {
   display: flex;
+  padding: var(--spacing-150, 12px) var(--spacing-200, 16px);
+  align-items: flex-start;
   height: 32px;
   min-width: 40px;
-  padding: 0 var(--spacing-150);
   justify-content: center;
   align-items: center;
   border: none;
-  border-radius: var(--corner-radius-full, 999px);
+  border-radius: var(--corner-radius-8, 8px);
   background: transparent;
   color: var(--color-neutral-200, #9d9d9d);
   @include styles.text-preset-5;
@@ -201,6 +201,10 @@
     width: 100%;
     justify-content: space-between;
     overflow-x: auto;
+    display: flex;
+    padding: var(--spacing-150, 12px) var(--spacing-200, 16px);
+    align-items: flex-start;
+    border-radius: 44px;
   }
 
   .historyChartsRangeButton {

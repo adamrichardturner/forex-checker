@@ -105,10 +105,12 @@ export function NavigationTabs({ base, quote, amount, formattedAmount }: Navigat
       <TabsList className={styles.tabsList}>
         {tabOptions.map((option) => (
           <TabsTrigger key={option.value} value={option.value} className={styles.tabTrigger}>
-            <span className={styles.tabTriggerLabel}>{option.label}</span>
-            {option.badge ? (
-              <TabBadge count={option.badge.count} isReady={option.badge.isReady} />
-            ) : null}
+            <span className={styles.tabTriggerContent}>
+              <span className={styles.tabTriggerLabel}>{option.label}</span>
+              {option.badge ? (
+                <TabBadge count={option.badge.count} isReady={option.badge.isReady} />
+              ) : null}
+            </span>
           </TabsTrigger>
         ))}
       </TabsList>
