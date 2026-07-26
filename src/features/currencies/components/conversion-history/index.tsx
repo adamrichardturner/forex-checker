@@ -17,7 +17,6 @@ export function ConversionHistory() {
 
   return (
     <div className={styles.conversionHistory}>
-      <h2 className={styles.conversionHistoryTitle}>Conversion history</h2>
       <BaseCard level="level-1" className={styles.conversionHistoryBaseCard}>
         {isLoading ? (
           <p className={styles.conversionHistoryEmpty}>Loading conversion history…</p>

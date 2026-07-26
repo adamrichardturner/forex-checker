@@ -55,6 +55,9 @@ export function rangeToDates(range: RangePreset, now = new Date()): DateRange {
 
   const startDate = (() => {
     switch (range) {
+      case '1D':
+        return subtractUtcDays(endDate, 1)
+
       case '1W':
         return subtractUtcDays(endDate, 7)
 
@@ -63,9 +66,6 @@ export function rangeToDates(range: RangePreset, now = new Date()): DateRange {
 
       case '3M':
         return subtractUtcMonths(endDate, 3)
-
-      case '6M':
-        return subtractUtcMonths(endDate, 6)
 
       case '1Y':
         return subtractUtcYears(endDate, 1)

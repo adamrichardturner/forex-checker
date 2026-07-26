@@ -19,6 +19,7 @@ import {
 } from '../../utils/amount-input'
 import styles from './rate-checker.module.scss'
 import { BaseCard } from '@/components/layout/base-card'
+import { NavigationTabs } from '../navigation-tabs'
 
 export function RateChecker() {
   const {
@@ -104,112 +105,117 @@ export function RateChecker() {
 
   return (
     <div className={styles.rateChecker}>
-      <div className={styles.rateCheckerHeader}>
-        <h2 className={styles.rateCheckerTitle}>Check the rate</h2>
-        <div className={styles.rateCheckerActions}>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className={styles.rateCheckerActionButton}
-            onClick={() => {
-              void handleToggleFavourite()
-            }}
-            disabled={isTogglingFavourite}
-            aria-pressed={pairIsFavourite}
-            aria-label={pairIsFavourite ? 'Remove pair from favourites' : 'Add pair to favourites'}
-          >
-            {pairIsFavourite ? <BookmarkCheck /> : <Bookmark />}
-            {pairIsFavourite ? 'Favourited' : 'Favourite'}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className={styles.rateCheckerActionButton}
-            onClick={() => {
-              void handleLogConversion()
-            }}
-            disabled={!canLogConversion || isLogging}
-            aria-label="Log conversion"
-          >
-            <NotebookPen />
-            {isLogging ? 'Logging…' : 'Log conversion'}
-          </Button>
+      <div className={styles.rateCheckerMain}>
+        <div className={styles.rateCheckerHeader}>
+          <h2 className={styles.rateCheckerTitle}>Check the rate</h2>
+          <div className={styles.rateCheckerActions}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className={styles.rateCheckerActionButton}
+              onClick={() => {
+                void handleToggleFavourite()
+              }}
+              disabled={isTogglingFavourite}
+              aria-pressed={pairIsFavourite}
+              aria-label={
+                pairIsFavourite ? 'Remove pair from favourites' : 'Add pair to favourites'
+              }
+            >
+              {pairIsFavourite ? <BookmarkCheck /> : <Bookmark />}
+              {pairIsFavourite ? 'Favourited' : 'Favourite'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className={styles.rateCheckerActionButton}
+              onClick={() => {
+                void handleLogConversion()
+              }}
+              disabled={!canLogConversion || isLogging}
+              aria-label="Log conversion"
+            >
+              <NotebookPen />
+              {isLogging ? 'Logging…' : 'Log conversion'}
+            </Button>
+          </div>
         </div>
+        <BaseCard level="level-1" className={styles.rateCheckerBaseCard}>
+          <div className={styles.rateCheckerBody}>
+            <div className={styles.rateCheckerPanels}>
+              <div className={styles.rateCheckerCard}>
+                <h3 className={styles.rateCheckerCardTitle}>Send</h3>
+                <div className={styles.rateCheckerCardInputContainer}>
+                  <Input
+                    ref={sendInputRef}
+                    className={`h-auto ${styles.rateCheckerCardInput}`}
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    spellCheck={false}
+                    value={sendAmount}
+                    onChange={handleSendAmountChange}
+                    aria-label="Send amount"
+                  />
+                  <CurrencyButton
+                    selectedCode={sendCurrency}
+                    currencies={currencies ?? []}
+                    onSelect={onSetSendCurrency}
+                  />
+                </div>
+              </div>
+
+              <div className="hidden md:block">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className={styles.rateCheckerSwapButton}
+                  onClick={onSwapCurrencies}
+                  aria-label="Swap send and receive currencies"
+                >
+                  <ArrowLeftRight />
+                </Button>
+              </div>
+
+              <div className="block flex w-full justify-center md:hidden">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className={styles.rateCheckerSwapButton}
+                  onClick={onSwapCurrencies}
+                  aria-label="Swap send and receive currencies"
+                >
+                  <ArrowUpDown />
+                </Button>
+              </div>
+
+              <div className={styles.rateCheckerCard}>
+                <h3 className={styles.rateCheckerCardTitle}>Receive</h3>
+                <div className={styles.rateCheckerCardInputContainer}>
+                  <p className={styles.rateCheckerReceiveAmount} aria-live="polite">
+                    {receiveAmount}
+                  </p>
+                  <CurrencyButton
+                    selectedCode={receiveCurrency}
+                    currencies={currencies ?? []}
+                    onSelect={onSetReceiveCurrency}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={styles.rateCheckerFooter}>
+              {exchangeRateLabel ? (
+                <p className={styles.rateCheckerRate}>{exchangeRateLabel}</p>
+              ) : null}
+            </div>
+          </div>
+        </BaseCard>
       </div>
-      <BaseCard level="level-1" className={styles.rateCheckerBaseCard}>
-        <div className={styles.rateCheckerBody}>
-          <div className={styles.rateCheckerPanels}>
-            <div className={styles.rateCheckerCard}>
-              <h3 className={styles.rateCheckerCardTitle}>Send</h3>
-              <div className={styles.rateCheckerCardInputContainer}>
-                <Input
-                  ref={sendInputRef}
-                  className={`h-auto ${styles.rateCheckerCardInput}`}
-                  type="text"
-                  inputMode="decimal"
-                  autoComplete="off"
-                  spellCheck={false}
-                  value={sendAmount}
-                  onChange={handleSendAmountChange}
-                  aria-label="Send amount"
-                />
-                <CurrencyButton
-                  selectedCode={sendCurrency}
-                  currencies={currencies ?? []}
-                  onSelect={onSetSendCurrency}
-                />
-              </div>
-            </div>
-
-            <div className="hidden md:block">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className={styles.rateCheckerSwapButton}
-                onClick={onSwapCurrencies}
-                aria-label="Swap send and receive currencies"
-              >
-                <ArrowLeftRight />
-              </Button>
-            </div>
-
-            <div className="block flex w-full justify-center md:hidden">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className={styles.rateCheckerSwapButton}
-                onClick={onSwapCurrencies}
-                aria-label="Swap send and receive currencies"
-              >
-                <ArrowUpDown />
-              </Button>
-            </div>
-
-            <div className={styles.rateCheckerCard}>
-              <h3 className={styles.rateCheckerCardTitle}>Receive</h3>
-              <div className={styles.rateCheckerCardInputContainer}>
-                <p className={styles.rateCheckerReceiveAmount} aria-live="polite">
-                  {receiveAmount}
-                </p>
-                <CurrencyButton
-                  selectedCode={receiveCurrency}
-                  currencies={currencies ?? []}
-                  onSelect={onSetReceiveCurrency}
-                />
-              </div>
-            </div>
-          </div>
-          <div className={styles.rateCheckerFooter}>
-            {exchangeRateLabel ? (
-              <p className={styles.rateCheckerRate}>{exchangeRateLabel}</p>
-            ) : null}
-          </div>
-        </div>
-      </BaseCard>
+      <NavigationTabs base={sendCurrency} quote={receiveCurrency} />
     </div>
   )
 }

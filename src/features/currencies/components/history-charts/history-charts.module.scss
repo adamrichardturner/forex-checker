@@ -1,0 +1,209 @@
+@use 'mixins' as styles;
+
+.historyCharts {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-250);
+}
+
+.historyChartsToolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+}
+
+.historyChartsStats {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-100);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.historyChartsStat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  min-width: 104px;
+  padding: var(--spacing-150) var(--spacing-200);
+  border: 1px solid var(--color-neutral-500, #2e2e2e);
+  border-radius: var(--corner-radius-12, 12px);
+  background: var(--color-neutral-700, #171719);
+}
+
+.historyChartsStatLabel {
+  margin: 0;
+  @include styles.text-preset-6;
+  color: var(--color-neutral-200, #9d9d9d);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.historyChartsStatValue {
+  margin: 0;
+  @include styles.text-preset-4;
+  color: var(--color-neutral-50, #ffffff);
+}
+
+.historyChartsStatValuePositive {
+  color: var(--color-lime-500, #cef739);
+}
+
+.historyChartsStatValueNegative {
+  color: var(--color-red-500, #ff4141);
+}
+
+.historyChartsRanges {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-025);
+  padding: var(--spacing-025);
+  border-radius: var(--corner-radius-full, 999px);
+  background: var(--color-neutral-700, #171719);
+  border: 1px solid var(--color-neutral-500, #2e2e2e);
+}
+
+.historyChartsRangeButton {
+  display: flex;
+  height: 32px;
+  min-width: 40px;
+  padding: 0 var(--spacing-150);
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: var(--corner-radius-full, 999px);
+  background: transparent;
+  color: var(--color-neutral-200, #9d9d9d);
+  @include styles.text-preset-5;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+
+  &:hover {
+    color: var(--color-neutral-50, #ffffff);
+  }
+
+  &:focus-visible {
+    @include styles.focus-ring;
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--color-neutral-500, #2e2e2e);
+    color: var(--color-neutral-50, #ffffff);
+  }
+}
+
+.historyChartsCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  padding: var(--spacing-250);
+  border: 1px solid var(--color-neutral-500, #2e2e2e);
+  border-radius: var(--corner-radius-16, 16px);
+  background: var(--color-neutral-700, #171719);
+}
+
+.historyChartsCardHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+}
+
+.historyChartsPair {
+  margin: 0;
+  @include styles.text-preset-3;
+  color: var(--color-neutral-50, #ffffff);
+  text-transform: uppercase;
+}
+
+.historyChartsMeta {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-200, #9d9d9d);
+  text-transform: uppercase;
+}
+
+.historyChartsPlot {
+  width: 100%;
+  min-height: 272px;
+}
+
+.historyChartsContainer {
+  aspect-ratio: unset;
+  height: 272px;
+  min-height: 272px;
+  width: 100%;
+
+  :global(.recharts-cartesian-axis-tick text) {
+    fill: var(--color-neutral-200, #9d9d9d);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+}
+
+.historyChartsTooltip {
+  border-color: var(--color-neutral-500, #2e2e2e);
+  background: var(--color-neutral-700, #171719);
+  color: var(--color-neutral-50, #ffffff);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.historyChartsTooltipRow {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--spacing-100);
+  line-height: 1;
+}
+
+.historyChartsTooltipDot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: var(--corner-radius-full, 999px);
+  background: var(--color-lime-500, #cef739);
+}
+
+.historyChartsTooltipLabel {
+  flex: 1;
+  color: var(--color-neutral-200, #9d9d9d);
+  text-transform: uppercase;
+}
+
+.historyChartsTooltipValue {
+  color: var(--color-lime-500, #cef739);
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.historyChartsEmpty,
+.historyChartsStatus {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-100, #c6c6c6);
+}
+
+@media (max-width: 768px) {
+  .historyChartsStat {
+    min-width: calc(50% - var(--spacing-050));
+    flex: 1 1 calc(50% - var(--spacing-050));
+  }
+
+  .historyChartsRanges {
+    width: 100%;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
+
+  .historyChartsRangeButton {
+    flex: 1;
+  }
+}
