@@ -1,5 +1,5 @@
 import { FRANKFURTER_BASE_URL } from '../model/currency.constants'
-import type { FrankfurterTimeSeries } from '../model/currency.types'
+import type { LatestRatesTimeSeries } from '../model/currency.types'
 import { frankfurterTimeSeriesSchema } from '../model/frankfurter.schemas'
 
 type TimeSeriesArgs = {
@@ -14,7 +14,7 @@ export async function getTimeSeries({
   quote,
   start,
   end,
-}: TimeSeriesArgs): Promise<FrankfurterTimeSeries> {
+}: TimeSeriesArgs): Promise<LatestRatesTimeSeries> {
   const params = new URLSearchParams({
     base,
     quotes: quote,
