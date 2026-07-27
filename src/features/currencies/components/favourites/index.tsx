@@ -10,7 +10,6 @@ export function Favourites() {
 
   return (
     <div className={styles.favourites}>
-      <h2 className={styles.favouritesTitle}>Favourites</h2>
       <BaseCard level="level-1" className={styles.favouritesBaseCard}>
         {isLoading ? <p className={styles.favouritesEmpty}>Loading favourites…</p> : null}
         {error ? <p className={styles.favouritesEmpty}>Failed to load favourites</p> : null}

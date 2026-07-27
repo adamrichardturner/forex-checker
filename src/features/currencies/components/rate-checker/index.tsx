@@ -1,11 +1,13 @@
 'use client'
 
-import { useLayoutEffect, useRef, useState, type ChangeEvent } from 'react'
-import { ArrowLeftRight, ArrowUpDown, Bookmark, BookmarkCheck, NotebookPen } from 'lucide-react'
+import { useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from 'react'
+import { ArrowLeftRight, ArrowUpDown, Check, NotebookPen, Star } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { BaseCard } from '@/components/layout/base-card'
+import { cn } from '@/lib/utils'
 import { CurrencyButton } from '../..'
-import { useCurrencyExchange } from '../../hooks/use-currency-exchange'
+import type { useCurrencyExchange } from '../../hooks/use-currency-exchange'
 import {
   useConversionLogsContext,
   useFavouritePairsContext,
@@ -18,31 +20,66 @@ import {
   stripAmountFormatting,
 } from '../../utils/amount-input'
 import styles from './rate-checker.module.scss'
-import { BaseCard } from '@/components/layout/base-card'
 
-export function RateChecker() {
+const LOG_SUCCESS_MS = 2000
+
+type RateCheckerProps = ReturnType<typeof useCurrencyExchange>
+
+export function RateChecker({
+  currencies,
+  sendCurrency,
+  receiveCurrency,
+  sendAmount,
+  receiveAmount,
+  exchangeRateLabel,
+  onEnterSendAmount,
+  onSetSendCurrency,
+  onSetReceiveCurrency,
+  onSwapCurrencies,
+  canLogConversion,
+  conversionSnapshot,
+}: RateCheckerProps) {
   const {
-    currencies,
-    sendCurrency,
-    receiveCurrency,
-    sendAmount,
-    receiveAmount,
-    exchangeRateLabel,
-    onEnterSendAmount,
-    onSetSendCurrency,
-    onSetReceiveCurrency,
-    onSwapCurrencies,
-    canLogConversion,
-    conversionSnapshot,
-  } = useCurrencyExchange()
-  const { isFavourite, toggleFavourite } = useFavouritePairsContext()
+    isFavourite,
+    isLoading: isFavouritesLoading,
+    toggleFavourite,
+  } = useFavouritePairsContext()
   const { logConversion } = useConversionLogsContext()
   const [isLogging, setIsLogging] = useState(false)
+  const [loggedConversionKey, setLoggedConversionKey] = useState<string | null>(null)
   const [isTogglingFavourite, setIsTogglingFavourite] = useState(false)
+  const [optimisticFavourite, setOptimisticFavourite] = useState<{
+    pairKey: string
+    value: boolean
+  } | null>(null)
 
   const sendInputRef = useRef<HTMLInputElement>(null)
   const caretRef = useRef<number | null>(null)
-  const pairIsFavourite = isFavourite(sendCurrency, receiveCurrency)
+  const logSuccessTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const pairKey = `${sendCurrency}-${receiveCurrency}`
+  const conversionKey = `${pairKey}-${sendAmount}`
+  const persistedFavourite = isFavourite(sendCurrency, receiveCurrency)
+  const pairIsFavourite =
+    optimisticFavourite?.pairKey === pairKey ? optimisticFavourite.value : persistedFavourite
+  const justLogged = loggedConversionKey === conversionKey
+
+  let favouriteAriaLabel = 'Add pair to favourites'
+  if (isFavouritesLoading) {
+    favouriteAriaLabel = 'Loading favourite state'
+  } else if (pairIsFavourite) {
+    favouriteAriaLabel = 'Remove pair from favourites'
+  }
+
+  useEffect(() => {
+    return () => {
+      if (logSuccessTimeoutRef.current === null) {
+        return
+      }
+
+      clearTimeout(logSuccessTimeoutRef.current)
+    }
+  }, [])
 
   useLayoutEffect(() => {
     if (caretRef.current === null || !sendInputRef.current) {
@@ -73,17 +110,25 @@ export function RateChecker() {
       return
     }
 
+    const nextFavourite = !pairIsFavourite
+    setOptimisticFavourite({
+      pairKey,
+      value: nextFavourite,
+    })
     setIsTogglingFavourite(true)
 
     try {
       await toggleFavourite(sendCurrency, receiveCurrency)
+    } catch {
+      setOptimisticFavourite(null)
     } finally {
       setIsTogglingFavourite(false)
+      setOptimisticFavourite(null)
     }
   }
 
   const handleLogConversion = async () => {
-    if (!canLogConversion || !conversionSnapshot || isLogging) {
+    if (!canLogConversion || !conversionSnapshot || isLogging || justLogged) {
       return
     }
 
@@ -97,6 +142,17 @@ export function RateChecker() {
         receiveAmount: conversionSnapshot.receiveAmount,
         rate: conversionSnapshot.rate,
       })
+
+      setLoggedConversionKey(conversionKey)
+
+      if (logSuccessTimeoutRef.current !== null) {
+        clearTimeout(logSuccessTimeoutRef.current)
+      }
+
+      logSuccessTimeoutRef.current = setTimeout(() => {
+        setLoggedConversionKey(null)
+        logSuccessTimeoutRef.current = null
+      }, LOG_SUCCESS_MS)
     } finally {
       setIsLogging(false)
     }
@@ -106,37 +162,6 @@ export function RateChecker() {
     <div className={styles.rateChecker}>
       <div className={styles.rateCheckerHeader}>
         <h2 className={styles.rateCheckerTitle}>Check the rate</h2>
-        <div className={styles.rateCheckerActions}>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className={styles.rateCheckerActionButton}
-            onClick={() => {
-              void handleToggleFavourite()
-            }}
-            disabled={isTogglingFavourite}
-            aria-pressed={pairIsFavourite}
-            aria-label={pairIsFavourite ? 'Remove pair from favourites' : 'Add pair to favourites'}
-          >
-            {pairIsFavourite ? <BookmarkCheck /> : <Bookmark />}
-            {pairIsFavourite ? 'Favourited' : 'Favourite'}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className={styles.rateCheckerActionButton}
-            onClick={() => {
-              void handleLogConversion()
-            }}
-            disabled={!canLogConversion || isLogging}
-            aria-label="Log conversion"
-          >
-            <NotebookPen />
-            {isLogging ? 'Logging…' : 'Log conversion'}
-          </Button>
-        </div>
       </div>
       <BaseCard level="level-1" className={styles.rateCheckerBaseCard}>
         <div className={styles.rateCheckerBody}>
@@ -207,6 +232,68 @@ export function RateChecker() {
             {exchangeRateLabel ? (
               <p className={styles.rateCheckerRate}>{exchangeRateLabel}</p>
             ) : null}
+            <div className={styles.rateCheckerActions}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={styles.rateCheckerFavouriteButton}
+                onClick={() => {
+                  void handleToggleFavourite()
+                }}
+                disabled={isFavouritesLoading || isTogglingFavourite}
+                aria-pressed={isFavouritesLoading ? undefined : pairIsFavourite}
+                aria-busy={isFavouritesLoading}
+                aria-label={favouriteAriaLabel}
+                data-pending={isFavouritesLoading || undefined}
+              >
+                <span
+                  className={styles.rateCheckerButtonContent}
+                  data-active={!isFavouritesLoading && pairIsFavourite ? true : undefined}
+                >
+                  <span className={styles.rateCheckerButtonLabel}>
+                    <span className={styles.rateCheckerButtonLabelIcon}>
+                      <Star />
+                    </span>
+                    Favourite
+                  </span>
+                  <span className={styles.rateCheckerButtonLabelActive}>
+                    <span className={styles.rateCheckerButtonLabelIcon}>
+                      <Star fill="currentColor" />
+                    </span>
+                    Favourited
+                  </span>
+                </span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={cn(
+                  styles.rateCheckerLogButton,
+                  justLogged && styles.rateCheckerLogButtonSuccess,
+                )}
+                onClick={() => {
+                  void handleLogConversion()
+                }}
+                disabled={!canLogConversion || isLogging || justLogged}
+                aria-label={justLogged ? 'Conversion logged' : 'Log conversion'}
+              >
+                <span
+                  className={styles.rateCheckerButtonContent}
+                  data-active={justLogged || undefined}
+                >
+                  <span className={styles.rateCheckerButtonLabel}>
+                    <NotebookPen />
+                    Log conversion
+                  </span>
+                  <span className={styles.rateCheckerButtonLabelActive}>
+                    <Check />
+                    Logged conversion
+                  </span>
+                </span>
+              </Button>
+            </div>
           </div>
         </div>
       </BaseCard>

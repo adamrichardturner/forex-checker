@@ -28,21 +28,175 @@
   align-items: center;
   gap: var(--spacing-150);
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+  }
 }
 
-.rateCheckerActionButton {
-  border-color: var(--color-neutral-400);
-  background-color: var(--color-neutral-600);
-  color: var(--color-neutral-50);
+.rateCheckerFavouriteButton {
+  position: relative;
+  display: flex;
+  height: auto;
+  padding: var(--spacing-100, 8px) var(--spacing-150, 12px);
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--corner-radius-8, 8px);
+  border: 1px solid var(--colors-lime-500, #cef739);
+  background: transparent;
+  color: var(--colors-neutral-50, #fff);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease,
+    opacity 200ms ease;
 
-  &:hover {
-    background-color: var(--color-neutral-500);
-    color: var(--color-neutral-50);
+  @media (max-width: 480px) {
+    flex: 1;
+    width: 100%;
+  }
+
+  .rateCheckerButtonContent {
+    justify-items: start;
+  }
+
+  .rateCheckerButtonLabel,
+  .rateCheckerButtonLabelActive {
+    gap: var(--spacing-100, 8px);
+    justify-content: flex-start;
+    width: 100%;
   }
 
   &[aria-pressed='true'] {
-    border-color: var(--color-lime-500, #cef739);
-    color: var(--color-lime-500, #cef739);
+    background: var(--colors-lime-500, #cef739);
+    border-color: var(--colors-lime-500, #cef739);
+    color: var(--colors-neutral-900, #0a0a0a);
+  }
+
+  &:hover {
+    background: var(--color-neutral-600, #202022);
+    color: var(--colors-neutral-50, #fff);
+    border-color: var(--colors-lime-500, #cef739);
+  }
+
+  &[aria-pressed='true']:hover {
+    background: var(--colors-lime-500, #cef739);
+    color: var(--colors-neutral-900, #0a0a0a);
+    opacity: 0.92;
+  }
+
+  &[data-pending] {
+    border-color: transparent;
+    background: transparent;
+    color: transparent;
+    pointer-events: none;
+    transition: none;
+
+    .rateCheckerButtonContent {
+      visibility: hidden;
+    }
+  }
+
+  &:disabled {
+    pointer-events: none;
+  }
+}
+
+.rateCheckerLogButton {
+  display: flex;
+  height: auto;
+  padding: var(--spacing-100, 8px) var(--spacing-150, 12px);
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--corner-radius-8, 8px);
+  border: 1px solid var(--colors-lime-500, #cef739);
+  background: transparent;
+  color: var(--colors-neutral-50, #fff);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease,
+    opacity 200ms ease;
+
+  @media (max-width: 480px) {
+    flex: 1;
+    width: 100%;
+  }
+
+  .rateCheckerButtonLabel,
+  .rateCheckerButtonLabelActive {
+    gap: var(--spacing-075, 6px);
+  }
+
+  &:hover {
+    background: var(--color-neutral-600, #202022);
+    color: var(--colors-neutral-50, #fff);
+    border-color: var(--colors-lime-500, #cef739);
+  }
+
+  &:disabled:not(.rateCheckerLogButtonSuccess) {
+    opacity: 0.5;
+  }
+}
+
+.rateCheckerLogButtonSuccess {
+  background: var(--colors-lime-500, #cef739);
+  border-color: var(--colors-lime-500, #cef739);
+  color: var(--colors-neutral-900, #0a0a0a);
+  opacity: 1;
+
+  &:hover {
+    background: var(--colors-lime-500, #cef739);
+    color: var(--colors-neutral-900, #0a0a0a);
+  }
+}
+
+.rateCheckerButtonContent {
+  display: inline-grid;
+  place-items: center;
+}
+
+.rateCheckerButtonLabel,
+.rateCheckerButtonLabelActive {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: opacity 200ms ease;
+}
+
+.rateCheckerButtonLabelActive {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rateCheckerButtonContent[data-active] {
+  .rateCheckerButtonLabel {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .rateCheckerButtonLabelActive {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 
@@ -61,6 +215,13 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-200) var(--spacing-250);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--spacing-200);
+    gap: var(--spacing-200);
+  }
 }
 
 .rateCheckerPanels {
@@ -148,6 +309,10 @@
   margin: 0;
   @include styles.text-preset-5;
   color: var(--color-neutral-50);
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
