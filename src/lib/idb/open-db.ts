@@ -81,3 +81,8 @@ export function openDb(): Promise<IDBDatabase> {
 
   return dbPromise
 }
+
+/** Clears the cached DB promise so tests can rebuild IndexedDB between cases. */
+export function resetOpenDbCache(): void {
+  dbPromise = null
+}

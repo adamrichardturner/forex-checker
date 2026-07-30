@@ -65,32 +65,6 @@ describe('RateChecker', () => {
       })
     })
 
-    it('disables log button until conversion is valid, shows success, then re-enables', async () => {
-      const user = createUserWithFakeTimers()
-
-      renderWithProviders(<RateCheckerHarness />)
-
-      const logButton = await screen.findByRole('button', { name: 'Log conversion' })
-
-      await waitFor(() => {
-        expect(logButton).not.toBeDisabled()
-      })
-
-      await user.click(logButton)
-
-      await waitFor(() => {
-        expect(logButton).toHaveAccessibleName('Conversion logged')
-      })
-      expect(logButton).toBeDisabled()
-
-      vi.advanceTimersByTime(2000)
-
-      await waitFor(() => {
-        expect(logButton).toHaveAccessibleName('Log conversion')
-      })
-      expect(logButton).not.toBeDisabled()
-    })
-
     it('keeps log button disabled when send amount is zero', async () => {
       const user = createUserWithFakeTimers()
 
@@ -109,6 +83,33 @@ describe('RateChecker', () => {
       await waitFor(() => {
         expect(logButton).toBeDisabled()
       })
+    })
+  })
+
+  describe('log conversion', () => {
+    it('shows success state then re-enables after the timeout', async () => {
+      const { user } = renderWithProviders(<RateCheckerHarness />)
+
+      const logButton = await screen.findByRole('button', { name: 'Log conversion' })
+
+      await waitFor(() => {
+        expect(logButton).not.toBeDisabled()
+      })
+
+      await user.click(logButton)
+
+      await waitFor(() => {
+        expect(logButton).toHaveAccessibleName('Conversion logged')
+      })
+      expect(logButton).toBeDisabled()
+
+      await waitFor(
+        () => {
+          expect(logButton).toHaveAccessibleName('Log conversion')
+          expect(logButton).not.toBeDisabled()
+        },
+        { timeout: 3_000 },
+      )
     })
   })
 

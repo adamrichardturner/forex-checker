@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { describe, expect, it } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../../../../tests/utils/render'
@@ -12,16 +12,20 @@ type SeedPairsProps = {
 function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
   const { addFavourite, isLoading } = useFavouritePairsContext()
   const [ready, setReady] = useState(false)
+  const seededRef = useRef(false)
+  const pairsRef = useRef(pairs)
+  pairsRef.current = pairs
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || seededRef.current) {
       return
     }
 
     let cancelled = false
+    seededRef.current = true
 
     void (async () => {
-      for (const [base, quote] of pairs) {
+      for (const [base, quote] of pairsRef.current) {
         await addFavourite(base, quote)
       }
 
@@ -33,7 +37,7 @@ function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
     return () => {
       cancelled = true
     }
-  }, [addFavourite, isLoading, pairs])
+  }, [addFavourite, isLoading])
 
   if (!ready) {
     return null
@@ -94,10 +98,10 @@ describe('Favourites', () => {
 
     await waitFor(() => {
       expect(screen.getByText('1 pair')).toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: 'Remove USD to EUR from favourites' }),
+      ).toBeNull()
     })
-
-    expect(
-      screen.queryByRole('button', { name: 'Remove USD to EUR from favourites' }),
-    ).toBeNull()
   })
 })
+
