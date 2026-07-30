@@ -2,7 +2,9 @@
 
 ![FX Checker](./public/forex.png)
 
-A foreign exchange rate checker built with Next.js. You can convert between currencies, follow a live market ticker, review historical rate charts, compare several currencies at once, and keep favourites and conversion logs in the browser.
+A foreign exchange rate checker built with Next.js.
+
+You can convert between currencies, follow a live market ticker, review historical rate charts, compare several currencies at once, and keep favourites and conversion logs in the browser.
 
 Rates come from the [Frankfurter API](https://www.frankfurter.app/), which publishes European Central Bank reference rates.
 
