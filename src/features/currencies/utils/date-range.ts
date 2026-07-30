@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+import { APP_TIMEZONE } from '../model/timezone.constants'
 import type { RangePreset } from '../model/rate-history.types'
 
 type DateRange = {
@@ -6,72 +8,36 @@ type DateRange = {
   includesToday: boolean
 }
 
-const MS_PER_DAY = 24 * 60 * 60 * 1000
-
-function formatDate(date: Date): string {
-  return date.toISOString().slice(0, 10)
+function startOfAppDay(now: Date): DateTime {
+  return DateTime.fromJSDate(now, { zone: APP_TIMEZONE }).startOf('day')
 }
 
-function startOfUtcDay(date: Date): Date {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
-}
-
-function subtractUtcDays(date: Date, days: number): Date {
-  return new Date(date.getTime() - days * MS_PER_DAY)
-}
-
-function subtractUtcMonths(date: Date, months: number): Date {
-  const year = date.getUTCFullYear()
-  const month = date.getUTCMonth()
-  const day = date.getUTCDate()
-
-  const target = new Date(Date.UTC(year, month - months, 1))
-
-  const lastDayOfTargetMonth = new Date(
-    Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0),
-  ).getUTCDate()
-
-  target.setUTCDate(Math.min(day, lastDayOfTargetMonth))
-
-  return target
-}
-
-function subtractUtcYears(date: Date, years: number): Date {
-  const year = date.getUTCFullYear() - years
-  const month = date.getUTCMonth()
-  const day = date.getUTCDate()
-
-  const target = new Date(Date.UTC(year, month, 1))
-
-  const lastDayOfTargetMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
-
-  target.setUTCDate(Math.min(day, lastDayOfTargetMonth))
-
-  return target
+function formatDate(date: DateTime): string {
+  return date.toISODate() ?? ''
 }
 
 export function rangeToDates(range: RangePreset, now = new Date()): DateRange {
-  const endDate = startOfUtcDay(now)
+  const endDate = startOfAppDay(now)
 
   const startDate = (() => {
     switch (range) {
       case '1D':
-        return subtractUtcDays(endDate, 1)
+        return endDate.minus({ days: 1 })
 
       case '1W':
-        return subtractUtcDays(endDate, 7)
+        return endDate.minus({ days: 7 })
 
       case '1M':
-        return subtractUtcMonths(endDate, 1)
+        return endDate.minus({ months: 1 })
 
       case '3M':
-        return subtractUtcMonths(endDate, 3)
+        return endDate.minus({ months: 3 })
 
       case '1Y':
-        return subtractUtcYears(endDate, 1)
+        return endDate.minus({ years: 1 })
 
       case '5Y':
-        return subtractUtcYears(endDate, 5)
+        return endDate.minus({ years: 5 })
 
       default: {
         const exhaustiveCheck: never = range
@@ -91,13 +57,11 @@ export function getTickerDateRange(now = new Date()): {
   start: string
   end: string
 } {
-  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
-
-  const start = new Date(end)
-  start.setUTCDate(start.getUTCDate() - 7)
+  const end = startOfAppDay(now)
+  const start = end.minus({ days: 7 })
 
   return {
-    start: start.toISOString().slice(0, 10),
-    end: end.toISOString().slice(0, 10),
+    start: formatDate(start),
+    end: formatDate(end),
   }
 }

@@ -13,6 +13,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { useRateHistory } from '../../hooks/use-rate-history'
 import type { RangePreset, RateHistoryPoint } from '../../model/rate-history.types'
+import { APP_TIMEZONE, ECB_PUBLISH_HOUR, ECB_TIMEZONE } from '../../model/timezone.constants'
 import { formatExchangeRate } from '../../utils/amount-input'
 import { TabEmptyState } from '../tab-empty-state'
 import styles from './history-charts.module.scss'
@@ -60,23 +61,22 @@ function formatChangePct(value: number): string {
   return `${abs}%`
 }
 
+function toEcbPublishInAppTimezone(date: string): DateTime {
+  return DateTime.fromISO(date, { zone: ECB_TIMEZONE })
+    .set({ hour: ECB_PUBLISH_HOUR, minute: 0, second: 0, millisecond: 0 })
+    .setZone(APP_TIMEZONE)
+}
+
 function formatAxisDate(date: string): string {
-  return DateTime.fromISO(date, { zone: 'utc' }).toFormat('MMM d yyyy')
+  return DateTime.fromISO(date, { zone: APP_TIMEZONE }).toFormat('MMM d yyyy')
 }
 
 function formatTooltipDate(date: string): string {
-  return DateTime.fromISO(date, { zone: 'utc' })
-    .setZone('Europe/Berlin')
-    .set({ hour: 16, minute: 0 })
-    .toFormat('MMM d yyyy · HH:mm ZZZZ')
+  return toEcbPublishInAppTimezone(date).toFormat('MMM d yyyy · HH:mm ZZZZ')
 }
 
 function formatChartTimestamp(date: string): string {
-  return DateTime.fromISO(date, { zone: 'utc' })
-    .setZone('Europe/Berlin')
-    .set({ hour: 16, minute: 0 })
-    .toFormat('MMM d HH:mm ZZZZ')
-    .toUpperCase()
+  return toEcbPublishInAppTimezone(date).toFormat('MMM d HH:mm ZZZZ').toUpperCase()
 }
 
 function getChangeToneClass(change: number | undefined): string | undefined {

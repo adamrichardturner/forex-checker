@@ -1,7 +1,11 @@
 import { DateTime } from 'luxon'
+import { APP_TIMEZONE } from '../model/timezone.constants'
 
-export function formatLogAge(timestamp: number, now = DateTime.now()): string {
-  const createdAt = DateTime.fromMillis(timestamp)
+export function formatLogAge(
+  timestamp: number,
+  now = DateTime.now().setZone(APP_TIMEZONE),
+): string {
+  const createdAt = DateTime.fromMillis(timestamp, { zone: APP_TIMEZONE })
 
   if (!createdAt.isValid) {
     return '—'
