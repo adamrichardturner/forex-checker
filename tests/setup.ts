@@ -2,31 +2,20 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import 'fake-indexeddb/auto'
 import ResizeObserver from 'resize-observer-polyfill'
-import { afterAll, afterEach, beforeAll, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest'
 import { server } from './msw/server'
 import { resetIndexedDb } from './utils/idb'
 
-beforeAll(() => {
-  server.listen({ onUnhandledRequest: 'error' })
-})
+function setupWindowMocks(): void {
+  if (typeof window === 'undefined') {
+    return
+  }
 
-afterEach(() => {
-  cleanup()
-  server.resetHandlers()
-  resetIndexedDb()
-  vi.useRealTimers()
-  vi.restoreAllMocks()
-})
-
-afterAll(() => {
-  server.close()
-})
-
-if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
+    configurable: true,
     value: vi.fn().mockImplementation((query: string) => ({
-      matches: false,
+      matches: query.includes('prefers-reduced-motion'),
       media: query,
       onchange: null,
       addListener: vi.fn(),
@@ -68,3 +57,25 @@ if (typeof window !== 'undefined') {
     globalThis.PointerEvent = MockPointerEvent
   }
 }
+
+beforeAll(() => {
+  setupWindowMocks()
+  server.listen({ onUnhandledRequest: 'error' })
+})
+
+beforeEach(() => {
+  setupWindowMocks()
+})
+
+afterEach(() => {
+  cleanup()
+  server.resetHandlers()
+  resetIndexedDb()
+  vi.useRealTimers()
+  vi.restoreAllMocks()
+  setupWindowMocks()
+})
+
+afterAll(() => {
+  server.close()
+})
