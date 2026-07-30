@@ -6,6 +6,7 @@ import { currenciesQueryOptions } from '../../api/query-options'
 import { useCompareRates } from '../../hooks/use-compare-rates'
 import { COMPARE_CURRENCIES } from '../../model/currency.constants'
 import { useFavouritePairsContext } from '../../persistence/currency-persistence-provider'
+import { TabEmptyState } from '../tab-empty-state'
 import { CompareRow } from './compare-row'
 import styles from './compare.module.scss'
 
@@ -36,9 +37,19 @@ function getCompareQuotes(base: string, quote: string): string[] {
 
 export function Compare({ base, quote, amount, formattedAmount }: CompareProps) {
   const compareQuotes = getCompareQuotes(base, quote)
+  const hasAmount = amount > 0
   const { data: rows, isPending, isError } = useCompareRates(base, amount, compareQuotes)
   const { data: currencies } = useQuery({ ...currenciesQueryOptions })
   const { isFavourite, toggleFavourite } = useFavouritePairsContext()
+
+  if (!hasAmount) {
+    return (
+      <TabEmptyState
+        title="No comparison available"
+        description="Enter an amount in SEND above to see what your money is worth in other currencies."
+      />
+    )
+  }
 
   const currencyNames: Record<string, string> = {}
 
@@ -62,7 +73,7 @@ export function Compare({ base, quote, amount, formattedAmount }: CompareProps) 
             </span>
           </p>
           <p className={styles.compareHeaderCount}>
-            <span className={styles.compareHeaderEmphasis}>{pairCount}</span> pairs
+            <span>{pairCount}</span> pairs
           </p>
         </div>
 

@@ -15,7 +15,7 @@ export type CompareRateRow = {
 export function useCompareRates(base: string, amount: number, quotes: string[]) {
   return useQuery({
     ...latestRatesQueryOptions(ECB_BASE),
-    enabled: Boolean(base) && quotes.length > 0,
+    enabled: Boolean(base) && quotes.length > 0 && amount > 0,
     select: (data): CompareRateRow[] => {
       const rates = toRatesLookup(ECB_BASE, data)
 

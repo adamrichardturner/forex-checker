@@ -1,13 +1,12 @@
 import { DateTime } from 'luxon'
+import { ECB_PUBLISH_HOUR, ECB_TIMEZONE } from '../model/timezone.constants'
 
 export interface WorkingDayTimeOptions {
   hour: number
   minute?: number
   /**
-   * Defaults to the browser/runtime timezone.
-   *
-   * Supply an IANA timezone when the publication schedule is governed by
-   * a specific location rather than the user's location.
+   * IANA timezone for the wall-clock schedule.
+   * Defaults to the browser/runtime timezone when omitted.
    */
   timeZone?: string
 }
@@ -18,9 +17,6 @@ export interface WorkingDayTimeOptions {
  *
  * Calendar-day arithmetic preserves the configured local time across DST.
  */
-
-const ECB_PUBLISH_HOUR = 16
-
 export function msUntilNextWorkingDayTime(
   { hour, minute = 0, timeZone }: WorkingDayTimeOptions,
   now: Date = new Date(),
@@ -61,11 +57,11 @@ export function msUntilNextWorkingDayTime(
   return nextPublish.toMillis() - current.toMillis()
 }
 
-export function msUntilNextEcbPublish(now: Date = new Date(), timeZone?: string): number {
+export function msUntilNextEcbPublish(now: Date = new Date()): number {
   return msUntilNextWorkingDayTime(
     {
       hour: ECB_PUBLISH_HOUR,
-      timeZone,
+      timeZone: ECB_TIMEZONE,
     },
     now,
   )

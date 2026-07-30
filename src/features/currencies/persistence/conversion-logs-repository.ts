@@ -39,3 +39,19 @@ export async function listConversionLogs(): Promise<ConversionLog[]> {
 
   return logs.toSorted((a, b) => b.createdAt - a.createdAt)
 }
+
+export async function deleteConversionLog(id: number): Promise<void> {
+  const db = await openDb()
+  const tx = db.transaction(CONVERSION_LOGS_STORE, 'readwrite')
+  const store = tx.objectStore(CONVERSION_LOGS_STORE)
+  await requestToPromise(store.delete(id))
+  await transactionToPromise(tx)
+}
+
+export async function clearConversionLogs(): Promise<void> {
+  const db = await openDb()
+  const tx = db.transaction(CONVERSION_LOGS_STORE, 'readwrite')
+  const store = tx.objectStore(CONVERSION_LOGS_STORE)
+  await requestToPromise(store.clear())
+  await transactionToPromise(tx)
+}
