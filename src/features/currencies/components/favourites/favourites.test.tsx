@@ -13,8 +13,6 @@ function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
   const { addFavourite, isLoading } = useFavouritePairsContext()
   const [ready, setReady] = useState(false)
   const seededRef = useRef(false)
-  const pairsRef = useRef(pairs)
-  pairsRef.current = pairs
 
   useEffect(() => {
     if (isLoading || seededRef.current) {
@@ -25,7 +23,7 @@ function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
     seededRef.current = true
 
     void (async () => {
-      for (const [base, quote] of pairsRef.current) {
+      for (const [base, quote] of pairs) {
         await addFavourite(base, quote)
       }
 
@@ -37,7 +35,7 @@ function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
     return () => {
       cancelled = true
     }
-  }, [addFavourite, isLoading])
+  }, [addFavourite, isLoading, pairs])
 
   if (!ready) {
     return null

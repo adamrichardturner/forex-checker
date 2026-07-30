@@ -11,7 +11,6 @@ import {
 
 describe('openDb', () => {
   beforeEach(() => {
-    // eslint-disable-next-line no-global-assign -- intentional test isolation
     indexedDB = new IDBFactory()
     vi.resetModules()
   })

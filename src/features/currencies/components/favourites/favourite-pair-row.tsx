@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Star } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -95,7 +96,7 @@ export function FavouritePairRow({ pair, onToggleFavourite }: FavouritePairRowPr
     >
       <p className={styles.favouritesPair}>
         <span>{pair.base}</span>
-        <img
+        <Image
           src="/ArrowIcon.svg"
           alt=""
           width={11}

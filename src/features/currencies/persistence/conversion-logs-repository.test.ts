@@ -11,7 +11,6 @@ const sampleLog = {
 
 describe('conversion-logs-repository', () => {
   beforeEach(() => {
-    // eslint-disable-next-line no-global-assign -- intentional test isolation
     indexedDB = new IDBFactory()
     vi.resetModules()
   })

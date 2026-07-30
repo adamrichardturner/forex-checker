@@ -6,7 +6,7 @@ import {
   latestRatesQueryOptions,
 } from '@/features/currencies/api/query-options'
 import { Dashboard } from '@/features/currencies/components/dashboard/dashboard'
-import { Currency, LatestRatesResponse } from '@/features/currencies/model/currency.types'
+import { Currency } from '@/features/currencies/model/currency.types'
 import { TopBar } from '@/components/layout/top-bar'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
