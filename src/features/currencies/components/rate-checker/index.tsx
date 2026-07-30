@@ -182,6 +182,7 @@ export function RateChecker({
                 />
                 <CurrencyButton
                   selectedCode={sendCurrency}
+                  disabledCode={receiveCurrency}
                   currencies={currencies ?? []}
                   onSelect={onSetSendCurrency}
                 />
@@ -222,6 +223,7 @@ export function RateChecker({
                 </p>
                 <CurrencyButton
                   selectedCode={receiveCurrency}
+                  disabledCode={sendCurrency}
                   currencies={currencies ?? []}
                   onSelect={onSetReceiveCurrency}
                 />

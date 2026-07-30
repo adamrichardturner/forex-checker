@@ -15,15 +15,38 @@ const FILTERED_CURRENCIES_LIMIT = 4 as const
 
 type CurrencyButtonProps = {
   selectedCode: Currency['iso_code'] | null
+  disabledCode?: Currency['iso_code'] | null
   currencies: Currency[]
   onSelect: (code: Currency['iso_code']) => void
 }
 
-const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onSelect }) => {
+const CurrencyButton: FC<CurrencyButtonProps> = ({
+  selectedCode,
+  disabledCode = null,
+  currencies,
+  onSelect,
+}) => {
+  const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
+  }
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen)
+
+    if (nextOpen) {
+      return
+    }
+
+    setSearch('')
+  }
+
+  const handleSelectCode = (code: Currency['iso_code']) => {
+    onSelect(code)
+    setOpen(false)
+    setSearch('')
   }
 
   const popularCurrencies = currencies.filter((currency) =>
@@ -46,7 +69,7 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
   const filteredOtherCurrenciesCount = matchingOther.length
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger render={<Button className={styles.trigger} />}>
         <CurrencyFlag currencyCode={selectedCode} />
         <span className={styles.triggerCode}>{selectedCode}</span>
@@ -75,7 +98,8 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
                   key={currency.iso_code}
                   currency={currency}
                   selectedCode={selectedCode}
-                  onSelectCode={onSelect}
+                  disabledCode={disabledCode}
+                  onSelectCode={handleSelectCode}
                 />
               ))}
             </section>
@@ -92,7 +116,8 @@ const CurrencyButton: FC<CurrencyButtonProps> = ({ selectedCode, currencies, onS
                   key={currency.iso_code}
                   currency={currency}
                   selectedCode={selectedCode}
-                  onSelectCode={onSelect}
+                  disabledCode={disabledCode}
+                  onSelectCode={handleSelectCode}
                 />
               ))}
             </section>
@@ -108,16 +133,35 @@ export default CurrencyButton
 interface CurrencyItemProps {
   currency: Currency
   selectedCode: Currency['iso_code'] | null
+  disabledCode: Currency['iso_code'] | null
   onSelectCode: (code: Currency['iso_code']) => void
 }
 
-function CurrencyItem({ currency, selectedCode, onSelectCode }: CurrencyItemProps) {
+function CurrencyItem({ currency, selectedCode, disabledCode, onSelectCode }: CurrencyItemProps) {
   const isSelected = currency.iso_code === selectedCode
+  const isDisabled = currency.iso_code === disabledCode
+
+  const itemClassName = [
+    styles.item,
+    isSelected ? styles.itemSelected : null,
+    isDisabled ? styles.itemDisabled : null,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <button
-      className={`${styles.item}${isSelected ? ` ${styles.itemSelected}` : ''}`}
-      onClick={() => onSelectCode(currency.iso_code)}
+      type="button"
+      className={itemClassName}
+      disabled={isDisabled}
+      aria-disabled={isDisabled}
+      onClick={() => {
+        if (isDisabled) {
+          return
+        }
+
+        onSelectCode(currency.iso_code)
+      }}
     >
       <CurrencyFlag currencyCode={currency.iso_code} />
       <span className={styles.itemCode}>{currency.iso_code}</span>

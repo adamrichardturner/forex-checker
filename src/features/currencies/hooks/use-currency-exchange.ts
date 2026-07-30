@@ -53,13 +53,27 @@ export function useCurrencyExchange() {
     debouncedUpdateAmountRef.current(rawAmount)
   }, [])
 
-  const onSetSendCurrency = useCallback((currency: Currency['iso_code']) => {
-    setSendCurrency(currency)
-  }, [])
+  const onSetSendCurrency = useCallback(
+    (currency: Currency['iso_code']) => {
+      if (currency === receiveCurrency) {
+        return
+      }
 
-  const onSetReceiveCurrency = useCallback((currency: Currency['iso_code']) => {
-    setReceiveCurrency(currency)
-  }, [])
+      setSendCurrency(currency)
+    },
+    [receiveCurrency],
+  )
+
+  const onSetReceiveCurrency = useCallback(
+    (currency: Currency['iso_code']) => {
+      if (currency === sendCurrency) {
+        return
+      }
+
+      setReceiveCurrency(currency)
+    },
+    [sendCurrency],
+  )
 
   const {
     data: conversion,

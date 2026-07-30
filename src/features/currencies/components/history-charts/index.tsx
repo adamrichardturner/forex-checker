@@ -10,6 +10,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useRateHistory } from '../../hooks/use-rate-history'
 import type { RangePreset, RateHistoryPoint } from '../../model/rate-history.types'
 import { formatExchangeRate } from '../../utils/amount-input'
@@ -17,6 +18,8 @@ import styles from './history-charts.module.scss'
 import { Button } from '@/components/ui/button'
 
 const RANGE_PRESETS: RangePreset[] = ['1D', '1W', '1M', '3M', '1Y', '5Y']
+const SKELETON_Y_TICKS = 4
+const SKELETON_X_TICKS = 5
 
 type HistoryChartsProps = {
   base: string
@@ -98,6 +101,68 @@ function toChartData(points: RateHistoryPoint[]): HistoryChartDatum[] {
   }))
 }
 
+function HistoryChartSkeleton() {
+  const yTicks = []
+  const xTicks = []
+
+  for (let index = 0; index < SKELETON_Y_TICKS; index++) {
+    yTicks.push(
+      <Skeleton key={index} className={cn(styles.historyChartsSkeletonYTick, 'animate-none')} />,
+    )
+  }
+
+  for (let index = 0; index < SKELETON_X_TICKS; index++) {
+    xTicks.push(
+      <Skeleton key={index} className={cn(styles.historyChartsSkeletonXTick, 'animate-none')} />,
+    )
+  }
+
+  return (
+    <div
+      className={cn(styles.historyChartsSkeleton, 'animate-pulse')}
+      aria-busy="true"
+      aria-label="Loading rate history"
+    >
+      <div className={styles.historyChartsSkeletonBody}>
+        <div className={styles.historyChartsSkeletonYAxis}>{yTicks}</div>
+        <div className={styles.historyChartsSkeletonPlot}>
+          <div className={styles.historyChartsSkeletonGrid} aria-hidden="true">
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          <svg
+            className={styles.historyChartsSkeletonArea}
+            viewBox="0 0 100 40"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="history-chart-skeleton-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--color-neutral-500, #2e2e2e)" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="var(--color-neutral-500, #2e2e2e)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0 28 C8 26 14 18 22 17 C30 16 36 24 44 20 C52 16 58 8 66 10 C74 12 80 18 88 14 C94 11 97 13 100 12 L100 40 L0 40 Z"
+              fill="url(#history-chart-skeleton-fill)"
+            />
+            <path
+              d="M0 28 C8 26 14 18 22 17 C30 16 36 24 44 20 C52 16 58 8 66 10 C74 12 80 18 88 14 C94 11 97 13 100 12"
+              fill="none"
+              stroke="var(--color-neutral-400, #3d3d3d)"
+              strokeWidth="0.6"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+        </div>
+      </div>
+      <div className={styles.historyChartsSkeletonXAxis}>{xTicks}</div>
+    </div>
+  )
+}
+
 function HistoryAreaChart({
   points,
   base,
@@ -124,7 +189,7 @@ function HistoryAreaChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className={styles.historyChartsContainer}
+      className={cn(styles.historyChartsContainer, 'aspect-auto')}
       initialDimension={{ width: 944, height: 272 }}
     >
       <AreaChart
@@ -217,12 +282,13 @@ function HistoryAreaChart({
 
 export function HistoryCharts({ base, quote }: HistoryChartsProps) {
   const [range, setRange] = useState<RangePreset>('1M')
-  const { data, isPending, isError } = useRateHistory(base, quote, range)
+  const { data, isPending, isError, isPlaceholderData } = useRateHistory(base, quote, range)
 
-  const changeToneClass = getChangeToneClass(data?.change)
+  const isLoading = isPending || isPlaceholderData
+  const changeToneClass = getChangeToneClass(isLoading ? undefined : data?.change)
   const lastPointDate = data?.points.at(-1)?.date
   const metaLabel =
-    data !== undefined && lastPointDate !== undefined
+    !isLoading && data !== undefined && lastPointDate !== undefined
       ? `${formatExchangeRate(data.last)} · ${formatChartTimestamp(lastPointDate)}`
       : null
 
@@ -232,27 +298,51 @@ export function HistoryCharts({ base, quote }: HistoryChartsProps) {
         <div className={styles.historyChartsStats}>
           <div className={styles.historyChartsStat}>
             <p className={styles.historyChartsStatLabel}>Open</p>
-            <p className={styles.historyChartsStatValue}>
-              {data ? formatExchangeRate(data.open) : '—'}
-            </p>
+            <div className={styles.historyChartsStatValue}>
+              {isLoading ? (
+                <Skeleton className={styles.historyChartsStatSkeleton} />
+              ) : data ? (
+                formatExchangeRate(data.open)
+              ) : (
+                '—'
+              )}
+            </div>
           </div>
           <div className={styles.historyChartsStat}>
             <p className={styles.historyChartsStatLabel}>Last</p>
-            <p className={styles.historyChartsStatValue}>
-              {data ? formatExchangeRate(data.last) : '—'}
-            </p>
+            <div className={styles.historyChartsStatValue}>
+              {isLoading ? (
+                <Skeleton className={styles.historyChartsStatSkeleton} />
+              ) : data ? (
+                formatExchangeRate(data.last)
+              ) : (
+                '—'
+              )}
+            </div>
           </div>
           <div className={styles.historyChartsStat}>
             <p className={styles.historyChartsStatLabel}>Change</p>
-            <p className={cn(styles.historyChartsStatValue, changeToneClass)}>
-              {data ? formatSignedRate(data.change) : '—'}
-            </p>
+            <div className={cn(styles.historyChartsStatValue, changeToneClass)}>
+              {isLoading ? (
+                <Skeleton className={styles.historyChartsStatSkeleton} />
+              ) : data ? (
+                formatSignedRate(data.change)
+              ) : (
+                '—'
+              )}
+            </div>
           </div>
           <div className={styles.historyChartsStat}>
             <p className={styles.historyChartsStatLabel}>% Change</p>
-            <p className={cn(styles.historyChartsStatValue, changeToneClass)}>
-              {data ? formatChangePct(data.changePct) : '—'}
-            </p>
+            <div className={cn(styles.historyChartsStatValue, changeToneClass)}>
+              {isLoading ? (
+                <Skeleton className={styles.historyChartsStatSkeleton} />
+              ) : data ? (
+                formatChangePct(data.changePct)
+              ) : (
+                '—'
+              )}
+            </div>
           </div>
         </div>
 
@@ -278,17 +368,23 @@ export function HistoryCharts({ base, quote }: HistoryChartsProps) {
           <p className={styles.historyChartsPair}>
             {base}/{quote}
           </p>
-          {metaLabel ? <p className={styles.historyChartsMeta}>{metaLabel}</p> : null}
+          {isLoading ? (
+            <div className={styles.historyChartsMeta}>
+              <Skeleton className={styles.historyChartsMetaSkeleton} />
+            </div>
+          ) : metaLabel ? (
+            <p className={styles.historyChartsMeta}>{metaLabel}</p>
+          ) : null}
         </div>
 
         <div className={styles.historyChartsPlot}>
-          {isPending && !data ? (
-            <p className={styles.historyChartsStatus}>Loading rate history…</p>
-          ) : null}
-          {isError && !data ? (
+          {isLoading ? <HistoryChartSkeleton /> : null}
+          {isError && !isLoading ? (
             <p className={styles.historyChartsStatus}>Failed to load rate history</p>
           ) : null}
-          {data ? <HistoryAreaChart points={data.points} base={base} quote={quote} /> : null}
+          {!isLoading && data ? (
+            <HistoryAreaChart points={data.points} base={base} quote={quote} />
+          ) : null}
         </div>
       </div>
     </div>

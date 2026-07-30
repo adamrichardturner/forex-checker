@@ -29,7 +29,7 @@
 .popover {
   display: flex;
   width: 311px;
-  min-height: 466px;
+  height: auto;
   @include styles.spacing-100(padding);
   flex-direction: column;
   @include styles.spacing-125(gap);
@@ -82,7 +82,7 @@
 
   &:active {
     outline: none;
-    border-color: var(--colors-lime-500, #c6f135);
+    border-color: var(--colors-neutral-200, #e0e0e0);
     border-width: 1px;
     border-style: solid;
     transition: 0.25s ease-in-out;
@@ -93,8 +93,8 @@
   display: flex;
   flex-direction: column;
   @include styles.spacing-100(gap);
-  max-height: 320px;
   width: 100%;
+  overflow-y: auto;
 }
 
 .sectionGroup {
@@ -167,15 +167,25 @@
 .itemCheck {
   width: 14px;
   height: 14px;
-  color: var(--colors-accent, #c6f135);
+  color: var(--colors-neutral-50, #fff);
   margin-left: auto;
 }
 
 .itemSelected {
   @include styles.neutral-600(background);
-  border-color: var(--colors-lime-500, #c6f135);
+  border-color: var(--colors-neutral-200, #e0e0e0);
   border-radius: var(--corner-radius-4, 4px);
   border-width: 1px;
   border-style: solid;
   transition: 0.25s ease-in-out;
+}
+
+.itemDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+
+  &:hover {
+    border-color: transparent;
+    background: transparent;
+  }
 }

@@ -69,7 +69,7 @@
 
   --max-width-desktop: clamp(1100px, 90vw, 1400px);
   --max-width-tablet: clamp(720px, 90vw, 1000px);
-  --max-width-mobile: clamp(480px, 90vw, 767px);
+  --max-width-mobile: clamp(480px, 90vw, 768px);
 
   /* ------------------------------------------------------------
    * Border radius
