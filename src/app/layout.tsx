@@ -12,9 +12,7 @@ const jetBrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000',
-  ),
+  metadataBase: new URL('https://forex.adamrichardturner.dev'),
   title: 'FX Checker - Foreign Exchange Rates by Adam Turner',
   description:
     'Next.js, Tailwind and TypeScript app for checking foreign exchange rates by Adam Turner',
