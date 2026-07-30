@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: 'FX Checker',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: 'https://forex.adamrichardturner.dev/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'FX Checker by Adam Turner',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
       'Next.js, Tailwind and TypeScript app for checking foreign exchange rates by Adam Turner',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: 'https://forex.adamrichardturner.dev/opengraph-image.png',
         alt: 'FX Checker by Adam Turner',
       },
     ],
