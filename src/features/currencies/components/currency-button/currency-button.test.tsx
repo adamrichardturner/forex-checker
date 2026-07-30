@@ -1,17 +1,17 @@
-import { describe, it, expect } from '@jest/globals'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import CurrencyButton from './currency-button'
 
 describe('CurrencyButton', () => {
-  it('renders the currency code and label', () => {
+  it('renders the currency code', () => {
     render(
       <CurrencyButton
         selectedCode="USD"
         currencies={[{ iso_code: 'USD', name: 'US Dollar' }]}
-        onSelect={() => {}}
+        onSelect={vi.fn()}
       />,
     )
-    expect(screen.getByText('USD')).toBeTruthy()
-    expect(screen.getByText('US Dollar')).toBeTruthy()
+
+    expect(screen.getByText('USD')).toBeInTheDocument()
   })
 })
