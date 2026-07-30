@@ -2,21 +2,85 @@
 
 .conversionHistory {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-250);
-}
-
-.conversionHistoryTitle {
-  @include styles.text-preset-2;
-
-  color: var(--color-neutral-50, #ffffff);
-  text-align: left;
-  text-transform: uppercase;
 }
 
 .conversionHistoryBaseCard {
-  padding: var(--spacing-250);
+  display: flex;
+  padding: var(--spacing-250, 20px);
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-250, 20px);
+  align-self: stretch;
+  border-radius: var(--corner-radius-16, 16px);
+  border: 1px solid var(--colors-neutral-600, #202022);
+  background: var(--colors-neutral-700, #171719);
+
+  :global([data-slot='card-content']) {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-250, 20px);
+    align-self: stretch;
+  }
+}
+
+.conversionHistoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+  width: 100%;
+}
+
+.conversionHistoryHeaderTitle {
+  margin: 0;
+  font-family: 'JetBrains Mono';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: 1px;
+  color: var(--colors-neutral-50, #fff);
+  text-transform: uppercase;
+}
+
+.conversionHistoryHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-150, 12px);
+  flex-shrink: 0;
+}
+
+.conversionHistoryHeaderCount {
+  margin: 0;
+  @include styles.text-preset-5;
+  color: var(--color-neutral-200, #9d9d9d);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.conversionHistoryClearButton {
+  display: flex;
+  padding: var(--spacing-100, 8px) var(--spacing-150, 12px);
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  border-radius: var(--corner-radius-8, 8px);
+  border: 1px solid var(--colors-neutral-400, #3d3d3d);
+  background: var(--colors-neutral-600, #202022);
+  color: var(--colors-neutral-100, #9d9d9d);
+  @include styles.text-preset-5;
+  text-transform: uppercase;
+
+  &:hover {
+    background: var(--colors-neutral-500, #2e2e2e);
+    color: var(--colors-neutral-50, #fff);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 .conversionHistoryList {
@@ -25,47 +89,203 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-200);
+  gap: var(--spacing-150);
+  width: 100%;
+}
+
+.conversionHistoryContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-150);
+  width: 100%;
+  align-self: stretch;
 }
 
 .conversionHistoryItem {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--spacing-200);
-  background-color: var(--color-neutral-600);
-  border: 1px solid var(--color-neutral-500);
-  border-radius: var(--corner-radius-16, 16px);
-  padding: var(--spacing-250);
+  width: 100%;
+  padding: var(--spacing-200, 16px);
+  align-items: center;
+  gap: var(--spacing-200, 16px);
+  align-self: stretch;
+  box-sizing: border-box;
+  border-radius: var(--corner-radius-10, 10px);
+  border: 1px solid var(--colors-neutral-500, #2e2e2e);
+  background: var(--colors-neutral-600, #202022);
 }
 
-.conversionHistoryItemMain {
+.conversionHistoryMeta {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-100);
+  align-items: center;
+  gap: var(--spacing-200, 16px);
   min-width: 0;
+  flex: 1;
+}
+
+.conversionHistoryAge {
+  margin: 0;
+  min-width: 64px;
+  flex-shrink: 0;
+  @include styles.text-preset-4;
+  color: var(--colors-neutral-200, #9d9d9d);
 }
 
 .conversionHistoryPair {
   margin: 0;
-  @include styles.text-preset-3;
-  color: var(--color-neutral-50);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100, 8px);
+  min-width: 0;
+  @include styles.text-preset-4;
+  color: var(--colors-neutral-50, #fff);
+}
+
+.conversionHistoryPairArrow {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
 }
 
 .conversionHistoryAmounts {
-  margin: 0;
-  @include styles.text-preset-5;
-  color: var(--color-lime-500, #cef739);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-250, 20px);
+  flex-shrink: 0;
 }
 
-.conversionHistoryMeta {
+.conversionHistorySendAmount {
   margin: 0;
-  @include styles.text-preset-5;
+  font-family: 'JetBrains Mono';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 1px;
+  color: var(--colors-neutral-100, #c6c6c6);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.conversionHistoryReceiveAmount {
+  margin: 0;
+  font-family: 'JetBrains Mono';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 1px;
+  color: var(--colors-lime-500, #cef739);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.conversionHistoryDeleteButton {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  padding: var(--spacing-100, 8px);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-100, 8px);
+  flex-shrink: 0;
+  border-color: var(--color-neutral-400, #3d3d3d);
+  background-color: var(--color-neutral-600, #202022);
   color: var(--color-neutral-100, #c6c6c6);
+
+  &:hover {
+    background-color: var(--color-neutral-500, #2e2e2e);
+    color: var(--color-neutral-50, #ffffff);
+  }
 }
 
 .conversionHistoryEmpty {
   margin: 0;
   @include styles.text-preset-5;
   color: var(--color-neutral-100, #c6c6c6);
+}
+
+.clearDialog {
+  border: 1px solid var(--colors-neutral-500, #2e2e2e);
+  background: var(--colors-neutral-700, #171719);
+  color: var(--colors-neutral-50, #fff);
+  box-shadow: 0 20px 60px 0 rgba(10, 10, 10, 0.5);
+}
+
+.clearDialogTitle {
+  font-family: 'JetBrains Mono';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: 1px;
+  color: var(--colors-neutral-50, #fff);
+}
+
+.clearDialogDescription {
+  font-family: 'JetBrains Mono';
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 0.5px;
+  color: var(--colors-neutral-200, #9d9d9d);
+}
+
+.clearDialogFooter {
+  border-color: var(--colors-neutral-600, #202022);
+  background: var(--colors-neutral-600, #202022);
+}
+
+.clearDialogCancelButton {
+  @include styles.text-preset-5;
+  text-transform: uppercase;
+  border: 1px solid var(--colors-neutral-400, #3d3d3d);
+  background: var(--colors-neutral-600, #202022);
+  color: var(--colors-neutral-50, #fff);
+
+  &:hover {
+    background: var(--colors-neutral-500, #2e2e2e);
+    color: var(--colors-neutral-50, #fff);
+  }
+}
+
+.clearDialogConfirmButton {
+  @include styles.text-preset-5;
+  text-transform: uppercase;
+  background: var(--colors-red-500, #ff4141);
+  color: var(--colors-neutral-50, #fff);
+
+  &:hover {
+    background: color-mix(in srgb, var(--colors-red-500, #ff4141) 85%, black);
+    color: var(--colors-neutral-50, #fff);
+  }
+}
+
+@media (max-width: 768px) {
+  .conversionHistoryHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-150);
+  }
+
+  .conversionHistoryHeaderActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .conversionHistoryMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-075, 6px);
+  }
+
+  .conversionHistoryAge {
+    min-width: 0;
+  }
+
+  .conversionHistoryAmounts {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-075, 6px);
+  }
 }

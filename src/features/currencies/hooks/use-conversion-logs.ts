@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import type { ConversionLog, NewConversionLog } from '../model/persistence.types'
-import { addConversionLog, listConversionLogs } from '../persistence/conversion-logs-repository'
+import {
+  addConversionLog,
+  clearConversionLogs,
+  deleteConversionLog,
+  listConversionLogs,
+} from '../persistence/conversion-logs-repository'
 
 export function useConversionLogs() {
   const [logs, setLogs] = useState<ConversionLog[]>([])
@@ -52,10 +57,22 @@ export function useConversionLogs() {
     return log
   }, [])
 
+  const removeLog = useCallback(async (id: number) => {
+    await deleteConversionLog(id)
+    setLogs((current) => current.filter((log) => log.id !== id))
+  }, [])
+
+  const clearLogs = useCallback(async () => {
+    await clearConversionLogs()
+    setLogs([])
+  }, [])
+
   return {
     logs,
     isLoading,
     error,
     logConversion,
+    removeLog,
+    clearLogs,
   }
 }

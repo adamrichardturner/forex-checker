@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useRateHistory } from '../../hooks/use-rate-history'
 import type { RangePreset, RateHistoryPoint } from '../../model/rate-history.types'
 import { formatExchangeRate } from '../../utils/amount-input'
+import { TabEmptyState } from '../tab-empty-state'
 import styles from './history-charts.module.scss'
 import { Button } from '@/components/ui/button'
 
@@ -182,10 +183,6 @@ function HistoryAreaChart({
     },
   } satisfies ChartConfig
 
-  if (chartData.length === 0) {
-    return <p className={styles.historyChartsEmpty}>No history available for this range.</p>
-  }
-
   return (
     <ChartContainer
       config={chartConfig}
@@ -285,6 +282,18 @@ export function HistoryCharts({ base, quote }: HistoryChartsProps) {
   const { data, isPending, isError, isPlaceholderData } = useRateHistory(base, quote, range)
 
   const isLoading = isPending || isPlaceholderData
+  const hasChartData = data !== undefined && data.points.length > 0
+  const showEmptyState = !isLoading && (isError || !hasChartData)
+
+  if (showEmptyState) {
+    return (
+      <TabEmptyState
+        title="No chart data available"
+        description={`We couldn't load rate history for ${base}/${quote} right now. This usually clears up in a minute.`}
+      />
+    )
+  }
+
   const changeToneClass = getChangeToneClass(isLoading ? undefined : data?.change)
   const lastPointDate = data?.points.at(-1)?.date
   const metaLabel =
@@ -379,9 +388,6 @@ export function HistoryCharts({ base, quote }: HistoryChartsProps) {
 
         <div className={styles.historyChartsPlot}>
           {isLoading ? <HistoryChartSkeleton /> : null}
-          {isError && !isLoading ? (
-            <p className={styles.historyChartsStatus}>Failed to load rate history</p>
-          ) : null}
           {!isLoading && data ? (
             <HistoryAreaChart points={data.points} base={base} quote={quote} />
           ) : null}

@@ -198,13 +198,6 @@
   font-weight: 500;
 }
 
-.historyChartsEmpty,
-.historyChartsStatus {
-  margin: 0;
-  @include styles.text-preset-5;
-  color: var(--color-neutral-100, #c6c6c6);
-}
-
 .historyChartsStatSkeleton {
   display: block;
   height: 18px;
