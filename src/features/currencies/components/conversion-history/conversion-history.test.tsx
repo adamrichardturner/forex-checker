@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { describe, expect, it } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../../../../tests/utils/render'
@@ -20,16 +20,20 @@ type SeedLogsProps = {
 function ConversionHistoryWithSeededLogs({ logs }: SeedLogsProps) {
   const { logConversion, isLoading } = useConversionLogsContext()
   const [ready, setReady] = useState(false)
+  const seededRef = useRef(false)
+  const logsRef = useRef(logs)
+  logsRef.current = logs
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || seededRef.current) {
       return
     }
 
     let cancelled = false
+    seededRef.current = true
 
     void (async () => {
-      for (const log of logs) {
+      for (const log of logsRef.current) {
         await logConversion(log)
       }
 
@@ -41,7 +45,7 @@ function ConversionHistoryWithSeededLogs({ logs }: SeedLogsProps) {
     return () => {
       cancelled = true
     }
-  }, [isLoading, logConversion, logs])
+  }, [isLoading, logConversion])
 
   if (!ready) {
     return null
@@ -142,10 +146,10 @@ describe('ConversionHistory', () => {
 
     await waitFor(() => {
       expect(screen.getByText('1 LOGGED')).toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: 'Delete USD to EUR conversion log' }),
+      ).toBeNull()
     })
-
-    expect(
-      screen.queryByRole('button', { name: 'Delete USD to EUR conversion log' }),
-    ).toBeNull()
   })
 })
+

@@ -12,6 +12,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
+  timeout: 60_000,
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
@@ -35,14 +36,20 @@ export default defineConfig({
     {
       command: 'npx tsx tests/msw/http-server.ts',
       url: `http://127.0.0.1:${MOCK_API_PORT}/health`,
-      reuseExistingServer: !process.env.CI,
+      // Always start a fresh mock so error-state toggles do not leak across runs.
+      reuseExistingServer: false,
       timeout: 60_000,
+      env: {
+        ...process.env,
+        MOCK_API_PORT: String(MOCK_API_PORT),
+      },
     },
     {
-      command: 'npm run start',
+      // NEXT_PUBLIC_* is inlined at build time — rebuild against the mock API.
+      command: `NEXT_PUBLIC_FRANKFURTER_BASE_URL=${MOCK_API_URL} npm run build && NEXT_PUBLIC_FRANKFURTER_BASE_URL=${MOCK_API_URL} npm run start -- --port ${PORT}`,
       url: BASE_URL,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
+      reuseExistingServer: false,
+      timeout: 300_000,
       env: {
         ...process.env,
         PORT: String(PORT),

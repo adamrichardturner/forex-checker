@@ -1,6 +1,7 @@
 import { waitFor } from '@testing-library/react'
 import { DateTime } from 'luxon'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { RangePreset } from '../model/rate-history.types'
 import { APP_TIMEZONE } from '../model/timezone.constants'
 import { renderHookWithProviders } from '../../../../tests/utils/render'
 import { useRateHistory } from './use-rate-history'
@@ -39,9 +40,9 @@ describe('useRateHistory', () => {
 
   it('keeps previous data while a new range loads', async () => {
     const { result, rerender } = renderHookWithProviders(
-      ({ range }) => useRateHistory('EUR', 'USD', range),
+      ({ range }: { range: RangePreset }) => useRateHistory('EUR', 'USD', range),
       {
-        initialProps: { range: '1M' as const },
+        initialProps: { range: '1M' satisfies RangePreset },
       },
     )
 
@@ -51,7 +52,7 @@ describe('useRateHistory', () => {
 
     const firstPoints = result.current.data?.points
 
-    rerender({ range: '1W' as const })
+    rerender({ range: '1W' })
 
     expect(result.current.isPlaceholderData).toBe(true)
     expect(result.current.data?.points).toEqual(firstPoints)

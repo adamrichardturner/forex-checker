@@ -1,13 +1,12 @@
 import 'fake-indexeddb/auto'
 import { IDBFactory } from 'fake-indexeddb'
+import { resetOpenDbCache } from '@/lib/idb/open-db'
 
 /**
- * Resets IndexedDB between tests.
- *
- * `openDb()` caches `dbPromise` at module scope, so callers that need a clean
- * database after a reset must also call `vi.resetModules()` and re-import.
+ * Resets IndexedDB between tests and clears the cached `openDb()` promise.
  */
 export function resetIndexedDb(): void {
+  resetOpenDbCache()
   // Replace the global factory so subsequent opens use a fresh store.
   // eslint-disable-next-line no-global-assign -- intentional test isolation
   indexedDB = new IDBFactory()
