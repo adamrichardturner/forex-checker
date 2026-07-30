@@ -72,8 +72,12 @@ describe('Favourites', () => {
     })
 
     expect(screen.getByText('Pinned Pairs')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Remove USD to EUR from favourites' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Remove GBP to JPY from favourites' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Remove USD to EUR from favourites' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Remove GBP to JPY from favourites' }),
+    ).toBeInTheDocument()
   })
 
   it('unpins a pair and shows a singular count label', async () => {
@@ -98,10 +102,7 @@ describe('Favourites', () => {
 
     await waitFor(() => {
       expect(screen.getByText('1 pair')).toBeInTheDocument()
-      expect(
-        screen.queryByRole('button', { name: 'Remove USD to EUR from favourites' }),
-      ).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Remove USD to EUR from favourites' })).toBeNull()
     })
   })
 })
-

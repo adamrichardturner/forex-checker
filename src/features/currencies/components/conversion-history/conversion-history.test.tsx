@@ -146,10 +146,7 @@ describe('ConversionHistory', () => {
 
     await waitFor(() => {
       expect(screen.getByText('1 LOGGED')).toBeInTheDocument()
-      expect(
-        screen.queryByRole('button', { name: 'Delete USD to EUR conversion log' }),
-      ).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete USD to EUR conversion log' })).toBeNull()
     })
   })
 })
-

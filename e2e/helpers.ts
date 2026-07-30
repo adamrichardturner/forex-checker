@@ -29,9 +29,9 @@ export async function waitForDashboard(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Check the rate' })).toBeVisible()
   await expect(page.getByLabel('Send amount')).toBeVisible()
   await expect(page.getByText(/1 USD = /)).toBeVisible({ timeout: 15_000 })
-  await expect(
-    page.getByLabel(/Add pair to favourites|Remove pair from favourites/),
-  ).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByLabel(/Add pair to favourites|Remove pair from favourites/)).toBeVisible({
+    timeout: 15_000,
+  })
 }
 
 export async function openCurrencyPicker(page: Page, which: 'send' | 'receive'): Promise<void> {
@@ -65,5 +65,9 @@ export async function openNavigationTab(
 }
 
 export async function clickVisibleSwap(page: Page): Promise<void> {
-  await page.getByLabel('Swap send and receive currencies').and(page.locator(':visible')).first().click()
+  await page
+    .getByLabel('Swap send and receive currencies')
+    .and(page.locator(':visible'))
+    .first()
+    .click()
 }

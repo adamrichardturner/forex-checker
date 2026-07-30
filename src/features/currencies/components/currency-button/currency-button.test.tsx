@@ -7,11 +7,7 @@ import CurrencyButton from './currency-button'
 describe('CurrencyButton', () => {
   it('renders the selected currency code on the trigger', () => {
     renderWithProviders(
-      <CurrencyButton
-        selectedCode="USD"
-        currencies={CURRENCIES_FIXTURE}
-        onSelect={vi.fn()}
-      />,
+      <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
     )
 
     expect(screen.getByRole('button', { name: /USD/i })).toBeInTheDocument()
@@ -19,11 +15,7 @@ describe('CurrencyButton', () => {
 
   it('opens the popover and lists popular and other currencies', async () => {
     const { user } = renderWithProviders(
-      <CurrencyButton
-        selectedCode="USD"
-        currencies={CURRENCIES_FIXTURE}
-        onSelect={vi.fn()}
-      />,
+      <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
     )
 
     await user.click(screen.getByRole('button', { name: /USD/i }))
@@ -35,11 +27,7 @@ describe('CurrencyButton', () => {
 
   it('filters currencies by ISO code and name', async () => {
     const { user } = renderWithProviders(
-      <CurrencyButton
-        selectedCode="USD"
-        currencies={CURRENCIES_FIXTURE}
-        onSelect={vi.fn()}
-      />,
+      <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
     )
 
     await user.click(screen.getByRole('button', { name: /USD/i }))
@@ -58,11 +46,7 @@ describe('CurrencyButton', () => {
 
   it('caps other currencies at four items while showing the full match count', async () => {
     const { user } = renderWithProviders(
-      <CurrencyButton
-        selectedCode="USD"
-        currencies={CURRENCIES_FIXTURE}
-        onSelect={vi.fn()}
-      />,
+      <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
     )
 
     await user.click(screen.getByRole('button', { name: /USD/i }))
@@ -99,11 +83,7 @@ describe('CurrencyButton', () => {
 
   it('clears search when the popover closes', async () => {
     const { user } = renderWithProviders(
-      <CurrencyButton
-        selectedCode="USD"
-        currencies={CURRENCIES_FIXTURE}
-        onSelect={vi.fn()}
-      />,
+      <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
     )
 
     await user.click(screen.getByRole('button', { name: /USD/i }))
@@ -139,11 +119,7 @@ describe('CurrencyButton', () => {
   it('supports keyboard selection after filtering', async () => {
     const onSelect = vi.fn()
     const { user } = renderWithProviders(
-      <CurrencyButton
-        selectedCode="USD"
-        currencies={CURRENCIES_FIXTURE}
-        onSelect={onSelect}
-      />,
+      <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={onSelect} />,
     )
 
     await user.click(screen.getByRole('button', { name: /USD/i }))
