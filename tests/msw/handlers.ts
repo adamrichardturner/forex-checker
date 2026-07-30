@@ -7,6 +7,31 @@ import {
   filterRates,
 } from '../fixtures/frankfurter'
 
+type RateRow = {
+  date: string
+  base: string
+  quote: string
+  rate: number
+}
+
+function dedupeRates(rows: RateRow[]): RateRow[] {
+  const seen: Record<string, true> = {}
+  const result: RateRow[] = []
+
+  for (const row of rows) {
+    const key = `${row.date}-${row.base}-${row.quote}`
+
+    if (seen[key]) {
+      continue
+    }
+
+    seen[key] = true
+    result.push(row)
+  }
+
+  return result
+}
+
 export const frankfurterHandlers = [
   http.get('*/currencies', () => {
     return HttpResponse.json(CURRENCIES_FIXTURE)
@@ -20,12 +45,15 @@ export const frankfurterHandlers = [
     const to = url.searchParams.get('to')
 
     if (from || to) {
-      const series = filterRates([...TICKER_SERIES, ...TIME_SERIES_FIXTURE], {
-        base,
-        quotes,
-        from,
-        to,
-      })
+      // Prefer TICKER_SERIES values when dates overlap the longer chart fixture.
+      const series = dedupeRates(
+        filterRates([...TICKER_SERIES, ...TIME_SERIES_FIXTURE], {
+          base,
+          quotes,
+          from,
+          to,
+        }),
+      )
 
       return HttpResponse.json(series)
     }

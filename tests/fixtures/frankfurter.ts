@@ -106,11 +106,13 @@ function buildLongTimeSeries(): RateRow[] {
 
     for (const quote of quotes) {
       const baseRate = LATEST_RATES_EUR.find((row) => row.quote === quote)?.rate ?? 1
+      // Climb toward the latest fixture rate without overshooting it.
+      const progress = dayOffset / 39
       rows.push({
         date: isoDate,
         base: 'EUR',
         quote,
-        rate: Number((baseRate * (1 + dayOffset * 0.001)).toFixed(6)),
+        rate: Number((baseRate * (0.95 + progress * 0.05)).toFixed(6)),
       })
     }
   }
