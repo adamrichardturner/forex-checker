@@ -32,7 +32,10 @@ test.describe('favourites', () => {
     await openNavigationTab(page, 'Compare')
     await expect(page.getByText(/from USD/)).toBeVisible({ timeout: 10_000 })
 
-    await page.getByLabel(/Add USD to .+ to favourites/).first().click()
+    await page
+      .getByLabel(/Add USD to .+ to favourites/)
+      .first()
+      .click()
 
     await openNavigationTab(page, 'Favourites')
     await expect(page.getByText('Pinned Pairs')).toBeVisible()

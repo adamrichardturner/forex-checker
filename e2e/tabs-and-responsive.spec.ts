@@ -24,6 +24,3 @@ test.describe('tabs and responsive layout', () => {
     await expect(page.getByText(/from USD/)).toBeVisible({ timeout: 10_000 })
   })
 })
-
-
-

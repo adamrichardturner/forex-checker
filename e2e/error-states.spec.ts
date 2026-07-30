@@ -14,7 +14,10 @@ test.describe('error states', () => {
     await waitForDashboard(page)
     await setMockApiErrors({ rates: true })
 
-    await page.getByRole('group', { name: 'History range' }).getByRole('button', { name: '1W' }).click()
+    await page
+      .getByRole('group', { name: 'History range' })
+      .getByRole('button', { name: '1W' })
+      .click()
     await expect(page.getByText('No chart data available')).toBeVisible({ timeout: 15_000 })
   })
 

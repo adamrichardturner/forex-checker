@@ -21,8 +21,6 @@ function ConversionHistoryWithSeededLogs({ logs }: SeedLogsProps) {
   const { logConversion, isLoading } = useConversionLogsContext()
   const [ready, setReady] = useState(false)
   const seededRef = useRef(false)
-  const logsRef = useRef(logs)
-  logsRef.current = logs
 
   useEffect(() => {
     if (isLoading || seededRef.current) {
@@ -33,7 +31,7 @@ function ConversionHistoryWithSeededLogs({ logs }: SeedLogsProps) {
     seededRef.current = true
 
     void (async () => {
-      for (const log of logsRef.current) {
+      for (const log of logs) {
         await logConversion(log)
       }
 
@@ -45,7 +43,7 @@ function ConversionHistoryWithSeededLogs({ logs }: SeedLogsProps) {
     return () => {
       cancelled = true
     }
-  }, [isLoading, logConversion])
+  }, [isLoading, logConversion, logs])
 
   if (!ready) {
     return null
@@ -146,10 +144,7 @@ describe('ConversionHistory', () => {
 
     await waitFor(() => {
       expect(screen.getByText('1 LOGGED')).toBeInTheDocument()
-      expect(
-        screen.queryByRole('button', { name: 'Delete USD to EUR conversion log' }),
-      ).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete USD to EUR conversion log' })).toBeNull()
     })
   })
 })
-

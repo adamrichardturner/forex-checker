@@ -3,7 +3,10 @@ import { render, screen } from '@testing-library/react'
 import { TopBar } from './index'
 
 vi.mock('next/image', () => ({
-  default: (props: { alt: string }) => <img alt={props.alt} />,
+  default: (props: { alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element -- lightweight stand-in for next/image in unit tests
+    <img alt={props.alt} />
+  ),
 }))
 
 describe('TopBar', () => {

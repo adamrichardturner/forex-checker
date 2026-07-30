@@ -133,7 +133,12 @@ export function filterRates(
 ): RateRow[] {
   const quoteSet =
     options.quotes && options.quotes.length > 0
-      ? new Set(options.quotes.split(',').map((quote) => quote.trim()).filter(Boolean))
+      ? new Set(
+          options.quotes
+            .split(',')
+            .map((quote) => quote.trim())
+            .filter(Boolean),
+        )
       : null
 
   return series.filter((row) => {

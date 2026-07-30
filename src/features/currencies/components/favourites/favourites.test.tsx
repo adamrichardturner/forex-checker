@@ -13,8 +13,6 @@ function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
   const { addFavourite, isLoading } = useFavouritePairsContext()
   const [ready, setReady] = useState(false)
   const seededRef = useRef(false)
-  const pairsRef = useRef(pairs)
-  pairsRef.current = pairs
 
   useEffect(() => {
     if (isLoading || seededRef.current) {
@@ -25,7 +23,7 @@ function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
     seededRef.current = true
 
     void (async () => {
-      for (const [base, quote] of pairsRef.current) {
+      for (const [base, quote] of pairs) {
         await addFavourite(base, quote)
       }
 
@@ -37,7 +35,7 @@ function FavouritesWithSeededPairs({ pairs }: SeedPairsProps) {
     return () => {
       cancelled = true
     }
-  }, [addFavourite, isLoading])
+  }, [addFavourite, isLoading, pairs])
 
   if (!ready) {
     return null
@@ -72,8 +70,12 @@ describe('Favourites', () => {
     })
 
     expect(screen.getByText('Pinned Pairs')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Remove USD to EUR from favourites' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Remove GBP to JPY from favourites' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Remove USD to EUR from favourites' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Remove GBP to JPY from favourites' }),
+    ).toBeInTheDocument()
   })
 
   it('unpins a pair and shows a singular count label', async () => {
@@ -98,10 +100,7 @@ describe('Favourites', () => {
 
     await waitFor(() => {
       expect(screen.getByText('1 pair')).toBeInTheDocument()
-      expect(
-        screen.queryByRole('button', { name: 'Remove USD to EUR from favourites' }),
-      ).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Remove USD to EUR from favourites' })).toBeNull()
     })
   })
 })
-

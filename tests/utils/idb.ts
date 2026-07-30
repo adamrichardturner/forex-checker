@@ -7,8 +7,6 @@ import { resetOpenDbCache } from '@/lib/idb/open-db'
  */
 export function resetIndexedDb(): void {
   resetOpenDbCache()
-  // Replace the global factory so subsequent opens use a fresh store.
-  // eslint-disable-next-line no-global-assign -- intentional test isolation
   indexedDB = new IDBFactory()
 }
 

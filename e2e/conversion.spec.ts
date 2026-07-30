@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test'
-import { clickVisibleSwap, installMockApiReset, openCurrencyPicker, waitForDashboard } from './helpers'
+import {
+  clickVisibleSwap,
+  installMockApiReset,
+  openCurrencyPicker,
+  waitForDashboard,
+} from './helpers'
 
 installMockApiReset()
 
@@ -25,8 +30,6 @@ test.describe('conversion flow', () => {
     await waitForDashboard(page)
 
     await clickVisibleSwap(page)
-
-
 
     await expect(page.getByText(/1 EUR = 1\.1000 USD/)).toBeVisible({ timeout: 10_000 })
     await expect(page.getByLabel('Send amount')).toHaveValue('909.09')

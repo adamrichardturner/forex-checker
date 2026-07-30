@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Trash2 } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -65,7 +66,7 @@ export function ConversionLogRow({ log, onRemove }: ConversionLogRowProps) {
         <p className={styles.conversionHistoryAge}>{formatLogAge(log.createdAt)}</p>
         <p className={styles.conversionHistoryPair}>
           <span>{log.base}</span>
-          <img
+          <Image
             src="/ArrowIcon.svg"
             alt=""
             width={11}

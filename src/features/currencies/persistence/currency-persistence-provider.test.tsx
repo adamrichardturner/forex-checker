@@ -1,10 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { renderHookWithProviders } from '../../../../tests/utils/render'
-import {
-  useConversionLogsContext,
-  useFavouritePairsContext,
-} from './currency-persistence-provider'
+import { useConversionLogsContext, useFavouritePairsContext } from './currency-persistence-provider'
 
 describe('CurrencyPersistenceProvider', () => {
   it('throws when favourite context is used outside the provider', () => {

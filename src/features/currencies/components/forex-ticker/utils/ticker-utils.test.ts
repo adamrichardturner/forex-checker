@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  formatChange,
-  formatRate,
-  getChangeClassName,
-  getChangePrefix,
-} from './ticker-utils'
+import { formatChange, formatRate, getChangeClassName, getChangePrefix } from './ticker-utils'
 import styles from '../forex-ticker.module.scss'
 
 describe('formatRate', () => {

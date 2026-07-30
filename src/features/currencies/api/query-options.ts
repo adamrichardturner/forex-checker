@@ -5,7 +5,6 @@ import { getTimeSeries } from './get-time-series'
 import { currencyKeys } from './query-keys'
 import { msUntilNextEcbPublish } from '../utils/ecb-schedule'
 import { getTickerRates } from './get-ticker-rates'
-import { LatestRatesResponse } from '../model/currency.types'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 

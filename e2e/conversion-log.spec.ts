@@ -43,4 +43,3 @@ test.describe('conversion log', () => {
     await expect(page.getByText('No conversions logged yet')).toBeVisible({ timeout: 10_000 })
   })
 })
-
