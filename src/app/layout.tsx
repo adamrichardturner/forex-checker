@@ -12,10 +12,10 @@ const jetBrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://forex.adamrichardturner.dev'),
   title: 'FX Checker - Foreign Exchange Rates by Adam Turner',
   description:
     'Next.js, Tailwind and TypeScript app for checking foreign exchange rates by Adam Turner',
+  metadataBase: new URL('https://forex.adamrichardturner.dev'),
   openGraph: {
     title: 'FX Checker - Foreign Exchange Rates by Adam Turner',
     description:
@@ -45,6 +45,15 @@ export const metadata: Metadata = {
       },
     ],
     creator: '@devadam88',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+    },
   },
 }
 
