@@ -26,12 +26,15 @@
 .rateCheckerActions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--spacing-150);
   flex-wrap: wrap;
+  margin-left: auto;
+  flex-shrink: 0;
 
   @media (max-width: 768px) {
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     text-align: center;
     width: 100%;
   }
@@ -278,6 +281,12 @@
     outline: none;
     border: none;
   }
+
+  &:disabled {
+    background-color: transparent;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .rateCheckerReceiveAmount {
@@ -305,6 +314,13 @@
   }
 }
 
+.rateCheckerRateSlot {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+}
+
 .rateCheckerRate {
   margin: 0;
   @include styles.text-preset-5;
@@ -313,6 +329,15 @@
   @media (max-width: 768px) {
     text-align: center;
   }
+}
+
+.rateCheckerRateSkeleton {
+  display: block;
+  height: 14.4px;
+  width: 14rem;
+  max-width: 100%;
+  border-radius: var(--corner-radius-4, 4px);
+  background: var(--color-neutral-500, #2e2e2e);
 }
 
 @media (max-width: 768px) {

@@ -1,8 +1,11 @@
 import { waitFor } from '@testing-library/react'
+import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
+import { LATEST_RATES_EUR } from '../../../../tests/fixtures/frankfurter'
 import { frankfurterErrorHandlers } from '../../../../tests/msw/handlers'
 import { server } from '../../../../tests/msw/server'
-import { renderHookWithProviders } from '../../../../tests/utils/render'
+import { createTestQueryClient, renderHookWithProviders } from '../../../../tests/utils/render'
+import { latestRatesQueryOptions } from '../api/query-options'
 import { useConversion } from './use-conversion'
 
 describe('useConversion', () => {
@@ -36,6 +39,33 @@ describe('useConversion', () => {
 
     await waitFor(() => {
       expect(result.current.isError).toBe(true)
+    })
+  })
+
+  it('does not show prefetched latest rates until a fetch completes after mount', async () => {
+    server.use(
+      http.get('*/rates', async () => {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 50)
+        })
+        return HttpResponse.json([...LATEST_RATES_EUR])
+      }),
+    )
+
+    const queryClient = createTestQueryClient()
+    queryClient.setQueryData(latestRatesQueryOptions('EUR').queryKey, [
+      { date: '2026-07-28', base: 'EUR', quote: 'USD', rate: 2 },
+    ])
+
+    const { result } = renderHookWithProviders(() => useConversion('USD', 'EUR', 1000), {
+      queryClient,
+    })
+
+    expect(result.current.data).toBeUndefined()
+    expect(result.current.isPending).toBe(true)
+
+    await waitFor(() => {
+      expect(result.current.data?.converted).toBeCloseTo(1000 / 1.1)
     })
   })
 

@@ -10,6 +10,7 @@ export function useConversion(base: string, quote: string, amount: number) {
   const query = useQuery({
     ...latestRatesQueryOptions(ECB_BASE),
     enabled: Boolean(base && quote),
+    refetchOnMount: 'always',
     select: (data) => {
       const rates = toRatesLookup(ECB_BASE, data)
       const rate = crossRate(rates, base, quote)
@@ -22,17 +23,20 @@ export function useConversion(base: string, quote: string, amount: number) {
     },
   })
 
-  const rate = query.data?.rate
+  const canShowRates = query.isFetchedAfterMount
+  const rate = canShowRates ? query.data?.rate : undefined
   const converted = rate !== undefined && Number.isFinite(amount) ? rate * amount : undefined
 
   return {
     ...query,
-    data: query.data
-      ? {
-          rate: query.data.rate,
-          date: query.data.date,
-          converted,
-        }
-      : undefined,
+    isPending: query.isPending || !canShowRates,
+    data:
+      canShowRates && query.data
+        ? {
+            rate: query.data.rate,
+            date: query.data.date,
+            converted,
+          }
+        : undefined,
   }
 }

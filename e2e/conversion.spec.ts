@@ -9,7 +9,7 @@ import {
 installMockApiReset()
 
 test.describe('conversion flow', () => {
-  test('loads a prefetched USD to EUR conversion without a blank flash', async ({ page }) => {
+  test('loads a USD to EUR conversion from fetched rates', async ({ page }) => {
     await waitForDashboard(page)
 
     await expect(page.getByLabel('Send amount')).toHaveValue('1,000')
