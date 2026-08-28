@@ -7,7 +7,9 @@ export async function getLatestRates(base: string): Promise<LatestRatesResponse>
     base,
   })
 
-  const response = await fetch(`${FRANKFURTER_BASE_URL}/rates?${params.toString()}`)
+  const response = await fetch(`${FRANKFURTER_BASE_URL}/rates?${params.toString()}`, {
+    cache: 'no-store',
+  })
 
   if (!response.ok) {
     throw new Error(`Failed to fetch latest rates: ${response.status} ${response.statusText}`)

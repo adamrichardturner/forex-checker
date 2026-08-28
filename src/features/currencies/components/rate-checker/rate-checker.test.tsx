@@ -1,7 +1,10 @@
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { DateTime } from 'luxon'
+import { http, HttpResponse } from 'msw'
 import { createUserWithFakeTimers, renderWithProviders } from '../../../../../tests/utils/render'
+import { LATEST_RATES_EUR } from '../../../../../tests/fixtures/frankfurter'
+import { server } from '../../../../../tests/msw/server'
 import { APP_TIMEZONE } from '../../model/timezone.constants'
 import { useCurrencyExchange } from '../../hooks/use-currency-exchange'
 import * as favouritesRepository from '../../persistence/favourites-repository'
@@ -13,6 +16,32 @@ function RateCheckerHarness() {
 }
 
 describe('RateChecker', () => {
+  describe('loading conversion rates', () => {
+    it('disables send amount and shows a rate skeleton until fetch completes', async () => {
+      server.use(
+        http.get('*/rates', async () => {
+          await new Promise((resolve) => {
+            setTimeout(resolve, 50)
+          })
+          return HttpResponse.json([...LATEST_RATES_EUR])
+        }),
+      )
+
+      renderWithProviders(<RateCheckerHarness />)
+
+      const sendInput = screen.getByRole('textbox', { name: 'Send amount' })
+      expect(sendInput).toBeDisabled()
+      expect(screen.getByLabelText('Loading exchange rate')).toBeInTheDocument()
+
+      await waitFor(() => {
+        expect(sendInput).toBeEnabled()
+      })
+
+      expect(screen.queryByLabelText('Loading exchange rate')).not.toBeInTheDocument()
+      expect(screen.getByText(/1 USD = 0\.9091 EUR/)).toBeInTheDocument()
+    })
+  })
+
   describe('amount and swap interactions', () => {
     beforeEach(() => {
       vi.useFakeTimers({ shouldAdvanceTime: true })

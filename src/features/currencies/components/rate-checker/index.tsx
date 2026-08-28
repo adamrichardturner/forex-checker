@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from '
 import { ArrowLeftRight, ArrowUpDown, Check, NotebookPen, Star } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { BaseCard } from '@/components/layout/base-card'
 import { cn } from '@/lib/utils'
 import { CurrencyButton } from '../..'
@@ -27,6 +28,7 @@ type RateCheckerProps = ReturnType<typeof useCurrencyExchange>
 
 export function RateChecker({
   currencies,
+  isPending,
   sendCurrency,
   receiveCurrency,
   sendAmount,
@@ -171,13 +173,18 @@ export function RateChecker({
               <div className={styles.rateCheckerCardInputContainer}>
                 <Input
                   ref={sendInputRef}
-                  className={`h-auto ${styles.rateCheckerCardInput}`}
+                  className={cn(
+                    'h-auto bg-transparent disabled:bg-transparent',
+                    styles.rateCheckerCardInput,
+                  )}
                   type="text"
                   inputMode="decimal"
                   autoComplete="off"
                   spellCheck={false}
                   value={sendAmount}
                   onChange={handleSendAmountChange}
+                  disabled={isPending}
+                  aria-busy={isPending}
                   aria-label="Send amount"
                 />
                 <CurrencyButton
@@ -231,9 +238,18 @@ export function RateChecker({
             </div>
           </div>
           <div className={styles.rateCheckerFooter}>
-            {exchangeRateLabel ? (
-              <p className={styles.rateCheckerRate}>{exchangeRateLabel}</p>
-            ) : null}
+            <div className={styles.rateCheckerRateSlot}>
+              {isPending ? (
+                <Skeleton
+                  className={styles.rateCheckerRateSkeleton}
+                  role="status"
+                  aria-label="Loading exchange rate"
+                  aria-busy="true"
+                />
+              ) : exchangeRateLabel ? (
+                <p className={styles.rateCheckerRate}>{exchangeRateLabel}</p>
+              ) : null}
+            </div>
             <div className={styles.rateCheckerActions}>
               <Button
                 type="button"
