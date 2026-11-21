@@ -4,6 +4,7 @@ import {
   clampSendAmountInput,
   countRawCharacters,
   formatAmountInput,
+  formatAxisRate,
   formatConvertedAmount,
   formatExchangeRate,
   isValidAmountInput,
@@ -99,6 +100,31 @@ describe('formatConvertedAmount and formatExchangeRate', () => {
 
   it('formats exchange rates to four decimals', () => {
     expect(formatExchangeRate(1.23456)).toBe('1.2346')
+  })
+})
+
+describe('formatAxisRate', () => {
+  it('keeps four decimals for rates under 1,000', () => {
+    expect(formatAxisRate(0.90909)).toBe('0.9091')
+    expect(formatAxisRate(157.23)).toBe('157.2300')
+  })
+
+  it('drops to two decimals for rates in the thousands', () => {
+    expect(formatAxisRate(1470.254)).toBe('1,470.25')
+  })
+
+  it('abbreviates large rates so they fit the axis gutter', () => {
+    expect(formatAxisRate(28361)).toBe('28.36K')
+    expect(formatAxisRate(1935975.976)).toBe('1.936M')
+    expect(formatAxisRate(119849247929.6941)).toBe('119.8B')
+  })
+
+  it('never exceeds eight characters', () => {
+    const samples = [0.000017751, 0.9091, 999.99999, 1000, 9999.999, 10000, 2127444, 1.2e16]
+
+    for (const sample of samples) {
+      expect(formatAxisRate(sample).length).toBeLessThanOrEqual(8)
+    }
   })
 })
 

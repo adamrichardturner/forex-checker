@@ -16,6 +16,7 @@
 .topBarLeft {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .topBarRight {
@@ -32,6 +33,8 @@
 
   @media (max-width: 480px) {
     @include styles.text-preset-7;
+    min-width: 0;
+    text-align: right;
   }
 }
 

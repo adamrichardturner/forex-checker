@@ -14,7 +14,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useRateHistory } from '../../hooks/use-rate-history'
 import type { RangePreset, RateHistoryPoint } from '../../model/rate-history.types'
 import { APP_TIMEZONE, ECB_PUBLISH_HOUR, ECB_TIMEZONE } from '../../model/timezone.constants'
-import { formatExchangeRate } from '../../utils/amount-input'
+import { formatAxisRate, formatExchangeRate } from '../../utils/amount-input'
+import { fitTextStyle } from '../../utils/fit-text'
 import { TabEmptyState } from '../tab-empty-state'
 import styles from './history-charts.module.scss'
 import { Button } from '@/components/ui/button'
@@ -27,6 +28,8 @@ type HistoryChartsProps = {
   base: string
   quote: string
 }
+
+const LONG_STAT_VALUE_LENGTH = 12
 
 type HistoryChartDatum = {
   date: string
@@ -216,9 +219,9 @@ function HistoryAreaChart({
           tickLine={false}
           axisLine={false}
           tickMargin={8}
-          width={56}
+          width="auto"
           domain={['auto', 'auto']}
-          tickFormatter={formatExchangeRate}
+          tickFormatter={formatAxisRate}
         />
         <ChartTooltip
           cursor={{
@@ -301,58 +304,40 @@ export function HistoryCharts({ base, quote }: HistoryChartsProps) {
       ? `${formatExchangeRate(data.last)} · ${formatChartTimestamp(lastPointDate)}`
       : null
 
+  const stats = [
+    { label: 'Open', value: data ? formatExchangeRate(data.open) : '—' },
+    { label: 'Last', value: data ? formatExchangeRate(data.last) : '—' },
+    {
+      label: 'Change',
+      value: data ? formatSignedRate(data.change) : '—',
+      toneClass: changeToneClass,
+    },
+    {
+      label: '% Change',
+      value: data ? formatChangePct(data.changePct) : '—',
+      toneClass: changeToneClass,
+    },
+  ]
+
+  // Rates for high-denomination pairs (e.g. USD/IRR) are too long for a
+  // half-width tile on a phone, so those tiles go full width instead.
+  const hasLongStat = !isLoading && stats.some((stat) => stat.value.length > LONG_STAT_VALUE_LENGTH)
+
   return (
     <div className={styles.historyCharts}>
       <div className={styles.historyChartsToolbar}>
-        <div className={styles.historyChartsStats}>
-          <div className={styles.historyChartsStat}>
-            <p className={styles.historyChartsStatLabel}>Open</p>
-            <div className={styles.historyChartsStatValue}>
-              {isLoading ? (
-                <Skeleton className={styles.historyChartsStatSkeleton} />
-              ) : data ? (
-                formatExchangeRate(data.open)
-              ) : (
-                '—'
-              )}
+        <div className={styles.historyChartsStats} data-wide={hasLongStat || undefined}>
+          {stats.map((stat) => (
+            <div key={stat.label} className={styles.historyChartsStat}>
+              <p className={styles.historyChartsStatLabel}>{stat.label}</p>
+              <div
+                className={cn(styles.historyChartsStatValue, stat.toneClass)}
+                style={fitTextStyle(stat.value)}
+              >
+                {isLoading ? <Skeleton className={styles.historyChartsStatSkeleton} /> : stat.value}
+              </div>
             </div>
-          </div>
-          <div className={styles.historyChartsStat}>
-            <p className={styles.historyChartsStatLabel}>Last</p>
-            <div className={styles.historyChartsStatValue}>
-              {isLoading ? (
-                <Skeleton className={styles.historyChartsStatSkeleton} />
-              ) : data ? (
-                formatExchangeRate(data.last)
-              ) : (
-                '—'
-              )}
-            </div>
-          </div>
-          <div className={styles.historyChartsStat}>
-            <p className={styles.historyChartsStatLabel}>Change</p>
-            <div className={cn(styles.historyChartsStatValue, changeToneClass)}>
-              {isLoading ? (
-                <Skeleton className={styles.historyChartsStatSkeleton} />
-              ) : data ? (
-                formatSignedRate(data.change)
-              ) : (
-                '—'
-              )}
-            </div>
-          </div>
-          <div className={styles.historyChartsStat}>
-            <p className={styles.historyChartsStatLabel}>% Change</p>
-            <div className={cn(styles.historyChartsStatValue, changeToneClass)}>
-              {isLoading ? (
-                <Skeleton className={styles.historyChartsStatSkeleton} />
-              ) : data ? (
-                formatChangePct(data.changePct)
-              ) : (
-                '—'
-              )}
-            </div>
-          </div>
+          ))}
         </div>
 
         <div className={styles.historyChartsRanges} role="group" aria-label="History range">

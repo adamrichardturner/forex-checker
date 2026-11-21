@@ -29,6 +29,7 @@
 .popover {
   display: flex;
   width: 311px;
+  max-width: calc(100vw - var(--spacing-200, 16px));
   height: auto;
   @include styles.spacing-100(padding);
   flex-direction: column;

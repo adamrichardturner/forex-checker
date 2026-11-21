@@ -103,6 +103,32 @@ export function formatExchangeRate(rate: number): string {
   })
 }
 
+const AXIS_RATE_MAX_LENGTH = 8
+
+/**
+ * Chart axis labels live in a narrow fixed-width gutter (about eight glyphs),
+ * so precision is traded for length as rates grow instead of clipping them:
+ * `0.9091`, `157.2300`, `1,470.25`, `28.36K`, `1.936M`, `119.9B`.
+ */
+export function formatAxisRate(rate: number): string {
+  const precise = formatExchangeRate(rate)
+
+  if (precise.length <= AXIS_RATE_MAX_LENGTH) {
+    return precise
+  }
+
+  const rounded = formatConvertedAmount(rate)
+
+  if (rounded.length <= AXIS_RATE_MAX_LENGTH) {
+    return rounded
+  }
+
+  return rate.toLocaleString('en-US', {
+    notation: 'compact',
+    maximumSignificantDigits: 4,
+  })
+}
+
 export function clampSendAmountInput(value: string): string {
   const parsed = parseAmountInput(value)
 

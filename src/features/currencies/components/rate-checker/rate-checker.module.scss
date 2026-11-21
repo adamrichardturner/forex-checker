@@ -231,38 +231,82 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-300);
+  padding: var(--spacing-250);
 
   @media (max-width: 768px) {
     gap: var(--spacing-200);
   }
 
-  padding: var(--spacing-250);
+  @media (max-width: 480px) {
+    padding: var(--spacing-150);
+  }
 }
 
 .rateCheckerCard {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-250);
   background-color: var(--color-neutral-600);
   border: 1px solid var(--color-neutral-500);
   border-radius: var(--corner-radius-16, 16px);
   padding: var(--spacing-250);
   min-width: 0;
+  container: rate-card / inline-size;
+
+  @media (max-width: 480px) {
+    padding: var(--spacing-200);
+  }
+}
+
+// Wide card: amount and currency picker share a row.
+.rateCheckerCardLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'title title'
+    'amount currency';
+  align-items: center;
+  gap: var(--spacing-250) var(--spacing-200);
+
+  // Narrow card (phones, and the side-by-side tablet layout): the currency
+  // picker moves up beside the label so the amount gets the full card width.
+  @container rate-card (max-width: 400px) {
+    grid-template-areas:
+      'title currency'
+      'amount amount';
+    row-gap: var(--spacing-150);
+  }
 }
 
 .rateCheckerCardTitle {
+  grid-area: title;
   @include styles.text-preset-4;
   color: var(--colors-neutral-100, #c6c6c6);
   text-align: left;
   text-transform: uppercase;
 }
 
-.rateCheckerCardInputContainer {
+.rateCheckerCardCurrency {
+  grid-area: currency;
+  display: flex;
+  justify-content: flex-end;
+}
+
+// The amount slot is a size container so the value inside can scale its font
+// to the slot width: JetBrains Mono advances 0.6em per glyph, so
+// `width / (chars * 0.6)` is the largest font size that fits on one line.
+// 0.62 leaves a little slack for fallback fonts.
+.rateCheckerCardAmount {
+  grid-area: amount;
+  min-width: 0;
+  min-height: 53px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-200);
+  container-type: inline-size;
+
+  --amount-max-size: 40px;
+
+  @media (max-width: 928px) {
+    --amount-max-size: 26px;
+  }
 }
 
 .rateCheckerCardInput {
@@ -271,7 +315,10 @@
   outline: none;
   padding: 0;
   min-width: 0;
+  width: 100%;
   @include styles.text-preset-1;
+  // Never below 16px: smaller inputs make iOS Safari zoom the page on focus.
+  font-size: clamp(16px, calc(100cqw / (var(--fit-chars, 1) * 0.62)), var(--amount-max-size));
   color: var(--colors-neutral-50, #fff);
 
   &:focus,
@@ -292,11 +339,12 @@
 .rateCheckerReceiveAmount {
   margin: 0;
   min-width: 0;
-  height: 53px;
-  display: flex;
-  align-items: center;
-  flex: 1;
+  width: 100%;
   @include styles.text-preset-1;
+  font-size: clamp(12px, calc(100cqw / (var(--fit-chars, 1) * 0.62)), var(--amount-max-size));
+  font-variant-numeric: tabular-nums;
+  // Last resort once the minimum size is reached: wrap rather than clip.
+  overflow-wrap: anywhere;
   color: var(--color-lime-500, #cef739);
 }
 
@@ -323,8 +371,10 @@
 
 .rateCheckerRate {
   margin: 0;
+  min-width: 0;
   @include styles.text-preset-5;
   color: var(--color-neutral-50);
+  overflow-wrap: anywhere;
 
   @media (max-width: 768px) {
     text-align: center;
