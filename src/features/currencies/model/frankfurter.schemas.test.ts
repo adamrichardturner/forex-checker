@@ -32,9 +32,26 @@ describe('frankfurterCurrencySchema', () => {
     })
   })
 
-  it('rejects lowercase and non-three-letter codes', () => {
+  it('rejects lowercase codes', () => {
     expect(() => frankfurterCurrencySchema.parse({ iso_code: 'usd', name: 'US Dollar' })).toThrow()
-    expect(() => frankfurterCurrencySchema.parse({ iso_code: 'USDT', name: 'Tether' })).toThrow()
+  })
+
+  it('accepts v2 crypto and metal assets with a type field', () => {
+    expect(
+      frankfurterCurrencySchema.parse({
+        iso_code: 'USDT',
+        iso_numeric: null,
+        name: 'Tether',
+        symbol: '₮',
+        type: 'crypto',
+        start_date: '2017-01-01',
+        end_date: '2026-11-20',
+      }),
+    ).toMatchObject({ iso_code: 'USDT', type: 'crypto' })
+
+    expect(
+      frankfurterCurrencySchema.parse({ iso_code: 'XAU', name: 'Gold', type: 'metal' }),
+    ).toMatchObject({ type: 'metal' })
   })
 
   it('rejects empty names', () => {
@@ -50,6 +67,19 @@ describe('frankfurterCurrenciesSchema', () => {
         { iso_code: 'EUR', name: 'Euro' },
       ]),
     ).toHaveLength(2)
+  })
+
+  it('drops individual invalid rows instead of rejecting the whole list', () => {
+    expect(
+      frankfurterCurrenciesSchema.parse([
+        { iso_code: 'USD', name: 'US Dollar' },
+        { iso_code: 'bad', name: '' },
+      ]),
+    ).toEqual([{ iso_code: 'USD', name: 'US Dollar' }])
+  })
+
+  it('rejects a non-empty list with no valid rows', () => {
+    expect(() => frankfurterCurrenciesSchema.parse([{ iso_code: 'bad', name: '' }])).toThrow()
   })
 })
 
@@ -102,5 +132,18 @@ describe('frankfurterLatestRatesSchema', () => {
         { date: '2026-07-28', base: 'EUR', quote: 'USD', rate: 1.1 },
       ]),
     ).toHaveLength(1)
+  })
+
+  it('accepts v2 rows quoting crypto assets with non-three-letter codes', () => {
+    expect(
+      frankfurterLatestRatesSchema.parse([
+        { date: '2026-11-20', base: 'EUR', quote: 'AAVE', rate: 0.011213 },
+        { date: '2026-11-21', base: 'EUR', quote: 'USD', rate: 1.16 },
+      ]),
+    ).toHaveLength(2)
+  })
+
+  it('accepts an empty array', () => {
+    expect(frankfurterLatestRatesSchema.parse([])).toEqual([])
   })
 })

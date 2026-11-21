@@ -78,6 +78,30 @@ function resolveCurrentDate(
   return dates.at(-1) ?? null
 }
 
+/**
+ * Frankfurter's blended feed can publish partial days (e.g. weekends), so walk back
+ * to the most recent earlier date that actually has this pair.
+ */
+export function findPreviousRate(
+  dates: string[],
+  fromIndex: number,
+  ratesByDate: Record<string, RatesLookup>,
+  base: string,
+  quote: string,
+): number | null {
+  for (let index = fromIndex - 1; index >= 0; index--) {
+    const date = dates[index]
+    const rates = date ? ratesByDate[date] : undefined
+    const rate = rates ? tryCrossRate(rates, base, quote) : null
+
+    if (rate !== null) {
+      return rate
+    }
+  }
+
+  return null
+}
+
 function toTickerItems(rows: LatestRatesTimeSeries): TickerItem[] {
   const ratesByDate = groupRatesByDate(rows)
   const dates = Object.keys(ratesByDate).sort((a, b) => a.localeCompare(b))
@@ -88,14 +112,12 @@ function toTickerItems(rows: LatestRatesTimeSeries): TickerItem[] {
   }
 
   const currentDateIndex = dates.indexOf(currentDate)
-  const previousDate = currentDateIndex > 0 ? dates[currentDateIndex - 1] : undefined
   const currentRates = ratesByDate[currentDate]
 
   if (!currentRates) {
     return []
   }
 
-  const previousRates = previousDate ? ratesByDate[previousDate] : undefined
   const items: TickerItem[] = []
 
   for (const { base, quote } of TICKER_PAIRS) {
@@ -105,7 +127,7 @@ function toTickerItems(rows: LatestRatesTimeSeries): TickerItem[] {
       continue
     }
 
-    const previousRate = previousRates ? tryCrossRate(previousRates, base, quote) : null
+    const previousRate = findPreviousRate(dates, currentDateIndex, ratesByDate, base, quote)
     const change = previousRate === null ? null : rate - previousRate
     const changePct =
       previousRate === null || previousRate === 0 || change === null
