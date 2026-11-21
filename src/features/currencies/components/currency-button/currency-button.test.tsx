@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
-import { screen, within } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { screen, waitFor, within } from '@testing-library/react'
 import { CURRENCIES_FIXTURE } from '../../../../../tests/fixtures/frankfurter'
 import { renderWithProviders } from '../../../../../tests/utils/render'
 import CurrencyButton from './currency-button'
@@ -132,5 +132,89 @@ describe('CurrencyButton', () => {
 
     await user.click(screen.getByRole('button', { name: /CAD/i }))
     expect(onSelect).toHaveBeenCalledWith('CAD')
+  })
+
+  it('shows an empty state when nothing matches the search', async () => {
+    const { user } = renderWithProviders(
+      <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
+    )
+
+    await user.click(screen.getByRole('button', { name: /USD/i }))
+    await user.type(screen.getByPlaceholderText('Search currencies...'), 'zzz')
+
+    expect(screen.getByRole('status')).toHaveTextContent('No currencies match')
+    expect(screen.queryByText('POPULAR')).not.toBeInTheDocument()
+  })
+
+  describe('on small viewports', () => {
+    beforeEach(() => {
+      vi.mocked(window.matchMedia).mockImplementation(
+        (query: string) =>
+          ({
+            matches: query.includes('max-width'),
+            media: query,
+            onchange: null,
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+          }) as unknown as MediaQueryList,
+      )
+    })
+
+    it('opens the selector as a labelled dialog', async () => {
+      const { user } = renderWithProviders(
+        <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
+      )
+
+      await user.click(screen.getByRole('button', { name: /USD/i }))
+
+      const dialog = screen.getByRole('dialog', { name: 'Select currency' })
+      expect(within(dialog).getByPlaceholderText('Search currencies...')).toBeInTheDocument()
+    })
+
+    it('lists every other currency instead of capping at four', async () => {
+      const { user } = renderWithProviders(
+        <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
+      )
+
+      await user.click(screen.getByRole('button', { name: /USD/i }))
+
+      const otherSection = screen.getByText('OTHER CURRENCIES').closest('section')
+      expect(within(otherSection as HTMLElement).getAllByRole('button')).toHaveLength(24)
+    })
+
+    it('closes from the close button and clears the search', async () => {
+      const { user } = renderWithProviders(
+        <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={vi.fn()} />,
+      )
+
+      await user.click(screen.getByRole('button', { name: /USD/i }))
+      await user.type(screen.getByPlaceholderText('Search currencies...'), 'jpy')
+      await user.click(screen.getByRole('button', { name: 'Close currency selector' }))
+
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /USD/i }))
+      expect(screen.getByPlaceholderText('Search currencies...')).toHaveValue('')
+    })
+
+    it('selects a currency and closes the dialog', async () => {
+      const onSelect = vi.fn()
+      const { user } = renderWithProviders(
+        <CurrencyButton selectedCode="USD" currencies={CURRENCIES_FIXTURE} onSelect={onSelect} />,
+      )
+
+      await user.click(screen.getByRole('button', { name: /USD/i }))
+      await user.click(screen.getByRole('button', { name: /GBP/i }))
+
+      expect(onSelect).toHaveBeenCalledWith('GBP')
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      })
+    })
   })
 })

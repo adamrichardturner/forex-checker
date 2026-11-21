@@ -7,7 +7,9 @@ import {
   formatAxisRate,
   formatConvertedAmount,
   formatExchangeRate,
+  finalizeAmountInput,
   isValidAmountInput,
+  normalizeAmountInput,
   mapRawCaretToFormattedIndex,
   parseAmountInput,
   stripAmountFormatting,
@@ -41,6 +43,61 @@ describe('isValidAmountInput', () => {
 
   it('accepts the max send amount', () => {
     expect(isValidAmountInput(String(MAX_SEND_AMOUNT))).toBe(true)
+  })
+})
+
+describe('amount precision and length limits', () => {
+  it('accepts up to two decimal places', () => {
+    expect(isValidAmountInput('1000.9')).toBe(true)
+    expect(isValidAmountInput('1,000.99')).toBe(true)
+  })
+
+  it('rejects more than two decimal places', () => {
+    expect(isValidAmountInput('1000.999')).toBe(false)
+    expect(isValidAmountInput('1000.999999999999999')).toBe(false)
+    expect(isValidAmountInput('0.001')).toBe(false)
+  })
+
+  it('rejects over-long integer parts, including padded zeros', () => {
+    expect(isValidAmountInput('1000000')).toBe(false)
+    expect(isValidAmountInput('0000001')).toBe(false)
+  })
+
+  it('rejects signs, exponents and whitespace', () => {
+    expect(isValidAmountInput('-5')).toBe(false)
+    expect(isValidAmountInput('1e3')).toBe(false)
+    expect(isValidAmountInput('1 000')).toBe(false)
+  })
+})
+
+describe('normalizeAmountInput', () => {
+  it('strips redundant leading zeros', () => {
+    expect(normalizeAmountInput('007')).toBe('7')
+    expect(normalizeAmountInput('00.5')).toBe('0.5')
+    expect(normalizeAmountInput('0,050')).toBe('50')
+  })
+
+  it('keeps a single zero and ordinary values', () => {
+    expect(normalizeAmountInput('0')).toBe('0')
+    expect(normalizeAmountInput('0.5')).toBe('0.5')
+    expect(normalizeAmountInput('1,000.5')).toBe('1000.5')
+    expect(normalizeAmountInput('')).toBe('')
+  })
+})
+
+describe('finalizeAmountInput', () => {
+  it('drops a dangling decimal point', () => {
+    expect(finalizeAmountInput('1,000.')).toBe('1,000')
+  })
+
+  it('adds a leading zero to bare fractions', () => {
+    expect(finalizeAmountInput('.5')).toBe('0.5')
+  })
+
+  it('clears a lone decimal point and leaves complete values alone', () => {
+    expect(finalizeAmountInput('.')).toBe('')
+    expect(finalizeAmountInput('')).toBe('')
+    expect(finalizeAmountInput('1,000.50')).toBe('1,000.50')
   })
 })
 

@@ -1,6 +1,13 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from 'react'
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type InputEvent,
+} from 'react'
 import { ArrowLeftRight, ArrowUpDown, Check, NotebookPen, Star } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -15,9 +22,11 @@ import {
 } from '../../persistence/currency-persistence-provider'
 import {
   countRawCharacters,
+  finalizeAmountInput,
   formatAmountInput,
   isValidAmountInput,
   mapRawCaretToFormattedIndex,
+  normalizeAmountInput,
   stripAmountFormatting,
 } from '../../utils/amount-input'
 import { fitTextStyle } from '../../utils/fit-text'
@@ -95,17 +104,53 @@ export function RateChecker({
 
   const handleSendAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, selectionStart } = event.target
-    const rawAmount = stripAmountFormatting(value)
+    const typedAmount = stripAmountFormatting(value)
+    const rawAmount = normalizeAmountInput(typedAmount)
 
     if (!isValidAmountInput(rawAmount)) {
       return
     }
 
     const formattedAmount = formatAmountInput(rawAmount)
-    const rawCaret = countRawCharacters(value, selectionStart ?? 0)
+    const removedLeadingZeros = typedAmount.length - rawAmount.length
+    const rawCaret = Math.max(
+      0,
+      countRawCharacters(value, selectionStart ?? 0) - removedLeadingZeros,
+    )
 
     caretRef.current = mapRawCaretToFormattedIndex(formattedAmount, rawCaret)
-    onEnterSendAmount(value)
+    onEnterSendAmount(rawAmount)
+  }
+
+  // Blocks invalid keystrokes and pastes before they reach the field, so a
+  // rejected character never moves the caret.
+  const handleSendAmountBeforeInput = (event: InputEvent<HTMLInputElement>) => {
+    const { data } = event
+    const { value, selectionStart, selectionEnd } = event.currentTarget
+
+    if (!data) {
+      return
+    }
+
+    const start = selectionStart ?? value.length
+    const end = selectionEnd ?? start
+    const nextValue = `${value.slice(0, start)}${data}${value.slice(end)}`
+
+    if (isValidAmountInput(normalizeAmountInput(nextValue))) {
+      return
+    }
+
+    event.preventDefault()
+  }
+
+  const handleSendAmountBlur = () => {
+    const finalizedAmount = finalizeAmountInput(sendAmount)
+
+    if (finalizedAmount === sendAmount) {
+      return
+    }
+
+    onEnterSendAmount(finalizedAmount)
   }
 
   const handleToggleFavourite = async () => {
@@ -185,7 +230,9 @@ export function RateChecker({
                     autoComplete="off"
                     spellCheck={false}
                     value={sendAmount}
+                    onBeforeInput={handleSendAmountBeforeInput}
                     onChange={handleSendAmountChange}
+                    onBlur={handleSendAmountBlur}
                     disabled={isPending}
                     aria-busy={isPending}
                     aria-label="Send amount"

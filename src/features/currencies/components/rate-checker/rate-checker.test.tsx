@@ -75,6 +75,30 @@ describe('RateChecker', () => {
       expect(screen.getByText(/1 USD = 0\.9091 EUR/)).toBeInTheDocument()
     })
 
+    it('limits the send amount to two decimals and tidies it on blur', async () => {
+      const user = createUserWithFakeTimers()
+
+      renderWithProviders(<RateCheckerHarness />)
+
+      await waitFor(() => {
+        expect(screen.getByText('909.09')).toBeInTheDocument()
+      })
+
+      const sendInput = screen.getByRole('textbox', { name: 'Send amount' })
+      await user.clear(sendInput)
+      await user.type(sendInput, '1000.999999')
+      expect(sendInput).toHaveValue('1,000.99')
+
+      await user.clear(sendInput)
+      await user.type(sendInput, '007-5e')
+      expect(sendInput).toHaveValue('75')
+
+      await user.clear(sendInput)
+      await user.type(sendInput, '250.')
+      await user.tab()
+      expect(sendInput).toHaveValue('250')
+    })
+
     it('swaps send and receive currencies', async () => {
       const user = createUserWithFakeTimers()
 
