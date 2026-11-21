@@ -1,9 +1,42 @@
-const AMOUNT_INPUT_PATTERN = /^\d*\.?\d*$/
-
 export const MAX_SEND_AMOUNT = 100_000
+export const MAX_AMOUNT_DECIMALS = 2
+
+const MAX_AMOUNT_INTEGER_DIGITS = String(MAX_SEND_AMOUNT).length
+
+const AMOUNT_INPUT_PATTERN = new RegExp(
+  `^\\d{0,${MAX_AMOUNT_INTEGER_DIGITS}}(\\.\\d{0,${MAX_AMOUNT_DECIMALS}})?$`,
+)
 
 export function stripAmountFormatting(value: string): string {
   return value.replace(/,/g, '')
+}
+
+/**
+ * Drops redundant leading zeros while typing, so `007` becomes `7` and `00.5`
+ * becomes `0.5`. A single zero is kept (`0`, `0.5`).
+ */
+export function normalizeAmountInput(value: string): string {
+  const raw = stripAmountFormatting(value)
+
+  return raw.replace(/^0+(?=\d)/, '')
+}
+
+/**
+ * Tidies a finished entry when the field loses focus: `1000.` becomes `1,000`,
+ * `.5` becomes `0.5` and a lone `.` is cleared.
+ */
+export function finalizeAmountInput(value: string): string {
+  let raw = normalizeAmountInput(value)
+
+  if (raw.endsWith('.')) {
+    raw = raw.slice(0, -1)
+  }
+
+  if (raw.startsWith('.')) {
+    raw = `0${raw}`
+  }
+
+  return formatAmountInput(raw)
 }
 
 export function isValidAmountInput(value: string): boolean {
