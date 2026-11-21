@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { tickerRatesQueryOptions } from '../api/query-options'
 import type { LatestRatesTimeSeries } from '../model/currency.types'
 import { getTickerDateRange } from '../utils/date-range'
+import { findPreviousRate } from './use-forex-ticker'
 import { tryCrossRate, toRatesLookup, type RatesLookup } from '../utils/cross-rate'
 
 const ECB_BASE = 'EUR'
@@ -58,9 +59,7 @@ function selectPairRate(
       continue
     }
 
-    const previousDate = index > 0 ? dates[index - 1] : undefined
-    const previousRates = previousDate ? ratesByDate[previousDate] : undefined
-    const previousRate = previousRates ? tryCrossRate(previousRates, base, quote) : null
+    const previousRate = findPreviousRate(dates, index, ratesByDate, base, quote)
     const changePct =
       previousRate === null || previousRate === 0
         ? null
