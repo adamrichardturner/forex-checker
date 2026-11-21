@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const PORT = 3000
+const PORT = Number(process.env.E2E_PORT ?? 3000)
 const MOCK_API_PORT = 4010
 const BASE_URL = `http://127.0.0.1:${PORT}`
 const MOCK_API_URL = `http://127.0.0.1:${MOCK_API_PORT}/v2`
