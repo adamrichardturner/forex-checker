@@ -66,12 +66,14 @@
   overflow-wrap: anywhere;
 
   // Tiles are fixed-width below the tablet breakpoint: shrink long rates to
-  // fit on one line (0.6em glyph advance; 0.66 leaves slack for the ▲/▼
-  // glyphs, which come from a wider fallback font).
+  // fit on one line. Each glyph takes 0.6em plus the 1px letter-spacing set
+  // here; 0.66 leaves slack for the ▲/▼ glyphs, which come from a wider
+  // fallback font.
   @media (max-width: 768px) {
     display: flex;
     align-items: center;
-    font-size: clamp(11px, calc(100cqw / (var(--fit-chars, 1) * 0.66)), 18px);
+    letter-spacing: 1px;
+    font-size: clamp(11px, calc((100cqw / var(--fit-chars, 1) - 1px) / 0.66), 18px);
   }
 }
 
