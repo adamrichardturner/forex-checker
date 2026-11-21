@@ -39,6 +39,49 @@ function dedupeRates(rows: RateRow[]): RateRow[] {
   return result
 }
 
+const FIXTURE_BASE = 'EUR'
+
+/**
+ * Fixtures are EUR-based. Like the real Frankfurter API, serve any other base by
+ * cross-rating through EUR for each date.
+ */
+function rebaseRates(rows: readonly RateRow[], base: string | null): RateRow[] {
+  if (!base || base === FIXTURE_BASE) {
+    return [...rows]
+  }
+
+  const baseRateByDate = new Map<string, number>()
+
+  for (const row of rows) {
+    if (row.base === FIXTURE_BASE && row.quote === base) {
+      baseRateByDate.set(row.date, row.rate)
+    }
+  }
+
+  const rebased: RateRow[] = []
+
+  for (const [date, baseRate] of baseRateByDate) {
+    rebased.push({ date, base, quote: FIXTURE_BASE, rate: Number((1 / baseRate).toFixed(6)) })
+  }
+
+  for (const row of rows) {
+    const baseRate = baseRateByDate.get(row.date)
+
+    if (row.base !== FIXTURE_BASE || row.quote === base || baseRate === undefined) {
+      continue
+    }
+
+    rebased.push({
+      date: row.date,
+      base,
+      quote: row.quote,
+      rate: Number((row.rate / baseRate).toFixed(6)),
+    })
+  }
+
+  return rebased
+}
+
 const handlers = [
   http.get('*/currencies', () => {
     if (forceCurrenciesError) {
@@ -61,7 +104,7 @@ const handlers = [
 
     if (from || to) {
       const series = dedupeRates(
-        filterRates([...TICKER_SERIES, ...TIME_SERIES_FIXTURE], {
+        filterRates(rebaseRates(dedupeRates([...TICKER_SERIES, ...TIME_SERIES_FIXTURE]), base), {
           base,
           quotes,
           from,
@@ -73,7 +116,7 @@ const handlers = [
     }
 
     return HttpResponse.json(
-      filterRates([...LATEST_RATES_EUR], {
+      filterRates(rebaseRates(LATEST_RATES_EUR, base), {
         base,
         quotes,
       }),
@@ -83,6 +126,21 @@ const handlers = [
 
 const app = express()
 app.use(express.json())
+
+// The app fetches rates from the browser, which is a different origin (port) to this
+// mock. The real Frankfurter API allows any origin, so mirror that here.
+app.use((request, response, next) => {
+  response.setHeader('Access-Control-Allow-Origin', '*')
+  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+  if (request.method === 'OPTIONS') {
+    response.status(204).end()
+    return
+  }
+
+  next()
+})
 
 app.get('/health', (_request, response) => {
   response.status(200).json({ ok: true })

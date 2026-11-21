@@ -2,6 +2,14 @@ import { expect, test, type Page } from '@playwright/test'
 
 export const MOCK_API_ORIGIN = 'http://127.0.0.1:4010'
 
+/**
+ * The mock API serves fixtures with fixed dates (see tests/fixtures/frankfurter.ts), but
+ * the app requests history relative to "today". Pin the browser clock to a weekday inside
+ * the fixture window so the suite does not start failing once real time moves past it.
+ * The clock keeps ticking from this instant, so debounces and animations still run.
+ */
+export const E2E_NOW = new Date('2026-07-30T12:00:00Z')
+
 export async function resetMockApi(): Promise<void> {
   await fetch(`${MOCK_API_ORIGIN}/__test/reset`, { method: 'POST' })
 }
@@ -17,10 +25,14 @@ export async function setMockApiErrors(options: {
   })
 }
 
-/** Reset shared mock error flags before every test to avoid cross-worker pollution. */
+/**
+ * Reset shared mock error flags before every test to avoid cross-worker pollution, and
+ * pin the browser clock to the fixture window.
+ */
 export function installMockApiReset(): void {
-  test.beforeEach(async () => {
+  test.beforeEach(async ({ page }) => {
     await resetMockApi()
+    await page.clock.install({ time: E2E_NOW })
   })
 }
 
