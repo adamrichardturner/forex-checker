@@ -68,4 +68,36 @@ describe('useForexTicker', () => {
       true,
     )
   })
+
+  it('handles v2 payloads with crypto rows and partial weekend days', async () => {
+    server.use(
+      http.get('*/rates', () => {
+        return HttpResponse.json([
+          { date: '2026-07-24', base: 'EUR', quote: 'USD', rate: 1.08 },
+          { date: '2026-07-24', base: 'EUR', quote: 'JPY', rate: 158 },
+          // Weekend: crypto plus a partial set of fiat quotes only.
+          { date: '2026-07-25', base: 'EUR', quote: 'USDT', rate: 1.09 },
+          { date: '2026-07-25', base: 'EUR', quote: 'AAVE', rate: 0.011 },
+          { date: '2026-07-25', base: 'EUR', quote: 'JPY', rate: 159 },
+          { date: '2026-07-28', base: 'EUR', quote: 'USD', rate: 1.1 },
+          { date: '2026-07-28', base: 'EUR', quote: 'JPY', rate: 160 },
+          { date: '2026-07-28', base: 'EUR', quote: 'USDT', rate: 1.1 },
+        ])
+      }),
+    )
+
+    const { result } = renderHookWithProviders(() => useForexTicker())
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true)
+    })
+
+    const eurUsd = result.current.data?.find((item) => item.base === 'EUR' && item.quote === 'USD')
+
+    expect(eurUsd?.date).toBe('2026-07-28')
+    expect(eurUsd?.rate).toBeCloseTo(1.1)
+    // Previous EUR/USD comes from the 24th, skipping the weekend day that lacks USD.
+    expect(eurUsd?.previousRate).toBeCloseTo(1.08)
+    expect(eurUsd?.direction).toBe('up')
+  })
 })

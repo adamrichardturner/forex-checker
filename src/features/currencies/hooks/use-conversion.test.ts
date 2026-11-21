@@ -24,6 +24,27 @@ describe('useConversion', () => {
     })
   })
 
+  it('reports the date of the pair legs in a mixed-date v2 response', async () => {
+    server.use(
+      http.get('*/rates', () =>
+        HttpResponse.json([
+          { date: '2026-11-20', base: 'EUR', quote: 'AAVE', rate: 0.011213 },
+          { date: '2026-11-21', base: 'EUR', quote: 'GBP', rate: 0.87 },
+          { date: '2026-11-21', base: 'EUR', quote: 'USD', rate: 1.16 },
+          { date: '2026-11-20', base: 'EUR', quote: 'USDT', rate: 1.16 },
+        ]),
+      ),
+    )
+
+    const { result } = renderHookWithProviders(() => useConversion('USD', 'GBP', 100))
+
+    await waitFor(() => {
+      expect(result.current.data?.rate).toBeCloseTo(0.87 / 1.16)
+    })
+
+    expect(result.current.data?.date).toBe('2026-11-21')
+  })
+
   it('leaves converted undefined when the amount is NaN', async () => {
     const { result } = renderHookWithProviders(() => useConversion('EUR', 'USD', Number.NaN))
 
