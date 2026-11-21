@@ -20,6 +20,7 @@ import {
   mapRawCaretToFormattedIndex,
   stripAmountFormatting,
 } from '../../utils/amount-input'
+import { fitTextStyle } from '../../utils/fit-text'
 import styles from './rate-checker.module.scss'
 
 const LOG_SUCCESS_MS = 2000
@@ -169,30 +170,35 @@ export function RateChecker({
         <div className={styles.rateCheckerBody}>
           <div className={styles.rateCheckerPanels}>
             <div className={styles.rateCheckerCard}>
-              <h3 className={styles.rateCheckerCardTitle}>Send</h3>
-              <div className={styles.rateCheckerCardInputContainer}>
-                <Input
-                  ref={sendInputRef}
-                  className={cn(
-                    'h-auto bg-transparent disabled:bg-transparent',
-                    styles.rateCheckerCardInput,
-                  )}
-                  type="text"
-                  inputMode="decimal"
-                  autoComplete="off"
-                  spellCheck={false}
-                  value={sendAmount}
-                  onChange={handleSendAmountChange}
-                  disabled={isPending}
-                  aria-busy={isPending}
-                  aria-label="Send amount"
-                />
-                <CurrencyButton
-                  selectedCode={sendCurrency}
-                  disabledCode={receiveCurrency}
-                  currencies={currencies ?? []}
-                  onSelect={onSetSendCurrency}
-                />
+              <div className={styles.rateCheckerCardLayout}>
+                <h3 className={styles.rateCheckerCardTitle}>Send</h3>
+                <div className={styles.rateCheckerCardAmount}>
+                  <Input
+                    ref={sendInputRef}
+                    className={cn(
+                      'h-auto bg-transparent disabled:bg-transparent',
+                      styles.rateCheckerCardInput,
+                    )}
+                    style={fitTextStyle(sendAmount)}
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    spellCheck={false}
+                    value={sendAmount}
+                    onChange={handleSendAmountChange}
+                    disabled={isPending}
+                    aria-busy={isPending}
+                    aria-label="Send amount"
+                  />
+                </div>
+                <div className={styles.rateCheckerCardCurrency}>
+                  <CurrencyButton
+                    selectedCode={sendCurrency}
+                    disabledCode={receiveCurrency}
+                    currencies={currencies ?? []}
+                    onSelect={onSetSendCurrency}
+                  />
+                </div>
               </div>
             </div>
 
@@ -223,17 +229,25 @@ export function RateChecker({
             </div>
 
             <div className={styles.rateCheckerCard}>
-              <h3 className={styles.rateCheckerCardTitle}>Receive</h3>
-              <div className={styles.rateCheckerCardInputContainer}>
-                <p className={styles.rateCheckerReceiveAmount} aria-live="polite">
-                  {receiveAmount}
-                </p>
-                <CurrencyButton
-                  selectedCode={receiveCurrency}
-                  disabledCode={sendCurrency}
-                  currencies={currencies ?? []}
-                  onSelect={onSetReceiveCurrency}
-                />
+              <div className={styles.rateCheckerCardLayout}>
+                <h3 className={styles.rateCheckerCardTitle}>Receive</h3>
+                <div className={styles.rateCheckerCardAmount}>
+                  <p
+                    className={styles.rateCheckerReceiveAmount}
+                    style={fitTextStyle(receiveAmount)}
+                    aria-live="polite"
+                  >
+                    {receiveAmount}
+                  </p>
+                </div>
+                <div className={styles.rateCheckerCardCurrency}>
+                  <CurrencyButton
+                    selectedCode={receiveCurrency}
+                    disabledCode={sendCurrency}
+                    currencies={currencies ?? []}
+                    onSelect={onSetReceiveCurrency}
+                  />
+                </div>
               </div>
             </div>
           </div>

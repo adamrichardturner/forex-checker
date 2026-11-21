@@ -59,6 +59,9 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-250);
+  // Long values drop onto their own line instead of being clipped.
+  flex-wrap: wrap;
+  row-gap: var(--spacing-100, 8px);
   padding: var(--spacing-150) var(--spacing-200);
   border-radius: var(--corner-radius-10, 10px);
   border: 1px solid var(--colors-neutral-500, #2e2e2e);
@@ -70,7 +73,7 @@
   align-items: center;
   gap: var(--spacing-150);
   min-width: 0;
-  flex: 1;
+  flex: 1 1 7rem;
 }
 
 .compareFlag {
@@ -111,25 +114,35 @@
   flex-direction: column;
   align-items: flex-end;
   gap: var(--spacing-075);
-  flex-shrink: 0;
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
 }
 
 .compareAmount {
   margin: 0;
+  max-width: 100%;
   @include styles.text-preset-3;
   color: var(--color-neutral-50, #ffffff);
   font-variant-numeric: tabular-nums;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .compareRate {
   margin: 0;
+  max-width: 100%;
   @include styles.text-preset-6;
   color: var(--color-neutral-200, #9d9d9d);
   font-variant-numeric: tabular-nums;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .compareFavouriteButton {
   flex-shrink: 0;
+  // Stays on the right edge if a very long value pushes it onto its own line.
+  margin-left: auto;
   width: 32px;
   height: 32px;
   border-color: var(--color-neutral-400, #3d3d3d);
@@ -163,9 +176,17 @@
 }
 
 @media (max-width: 480px) {
-  .compareItem {
-    gap: var(--spacing-150);
+  .compareCard {
     padding: var(--spacing-200);
+  }
+
+  .compareItem {
+    column-gap: var(--spacing-150);
+    padding: var(--spacing-150);
+  }
+
+  .compareAmount {
+    font-size: 14px;
   }
 
   .compareFavouriteButton {

@@ -91,7 +91,8 @@ type RateRow = {
 
 function buildLongTimeSeries(): RateRow[] {
   const rows: RateRow[] = []
-  const quotes = ['USD', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD'] as const
+  // KRW gives the suite a high-denomination pair for long-number layout checks.
+  const quotes = ['USD', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'KRW'] as const
   const start = new Date(`${FIXTURE_WEEK_START}T12:00:00Z`)
 
   for (let dayOffset = 0; dayOffset < 40; dayOffset++) {

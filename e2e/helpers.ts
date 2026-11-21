@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 
 export const MOCK_API_ORIGIN = 'http://127.0.0.1:4010'
 
@@ -82,4 +82,51 @@ export async function clickVisibleSwap(page: Page): Promise<void> {
     .and(page.locator(':visible'))
     .first()
     .click()
+}
+
+/** Pick a currency in the send or receive picker by searching for its code. */
+export async function selectCurrency(
+  page: Page,
+  which: 'send' | 'receive',
+  code: string,
+  name: string,
+): Promise<void> {
+  await openCurrencyPicker(page, which)
+  await page.getByPlaceholder('Search currencies...').fill(code)
+  await page.getByRole('button', { name: new RegExp(name) }).click()
+}
+
+export async function setSendAmount(page: Page, amount: string): Promise<void> {
+  const input = page.getByLabel('Send amount')
+  await input.fill('')
+  await input.fill(amount)
+}
+
+/** Horizontal overflow of the page itself, in CSS pixels (0 when there is none). */
+export async function getPageOverflow(page: Page): Promise<number> {
+  return page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  )
+}
+
+/** True when the element's content is wider than the element, i.e. it would be cut off. */
+export async function isClipped(locator: Locator): Promise<boolean> {
+  return locator.evaluate((element) => element.scrollWidth > element.clientWidth)
+}
+
+/** Asserts `inner` sits within the left and right edges of `outer`. */
+export async function expectWithinHorizontally(inner: Locator, outer: Locator): Promise<void> {
+  const innerBox = await inner.boundingBox()
+  const outerBox = await outer.boundingBox()
+
+  expect(innerBox, 'inner element should be rendered').not.toBeNull()
+  expect(outerBox, 'outer element should be rendered').not.toBeNull()
+
+  if (!innerBox || !outerBox) {
+    return
+  }
+
+  const tolerance = 0.5
+  expect(innerBox.x).toBeGreaterThanOrEqual(outerBox.x - tolerance)
+  expect(innerBox.x + innerBox.width).toBeLessThanOrEqual(outerBox.x + outerBox.width + tolerance)
 }

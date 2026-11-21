@@ -39,6 +39,13 @@
 
   @media (max-width: 768px) {
     width: 100%;
+    // Tiles share the row 50/50 here, so their width is definite: make each a
+    // size container so its value can scale its font to the tile width.
+    container-type: inline-size;
+  }
+
+  @media (max-width: 480px) {
+    padding: var(--spacing-150, 12px) var(--spacing-200, 16px);
   }
 }
 
@@ -55,6 +62,19 @@
   @include styles.text-preset-2;
   color: var(--color-neutral-50, #ffffff);
   min-height: 18px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+
+  // Tiles are fixed-width below the tablet breakpoint: shrink long rates to
+  // fit on one line. Each glyph takes 0.6em plus the 1px letter-spacing set
+  // here; 0.66 leaves slack for the ▲/▼ glyphs, which come from a wider
+  // fallback font.
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    letter-spacing: 1px;
+    font-size: clamp(11px, calc((100cqw / var(--fit-chars, 1) - 1px) / 0.66), 18px);
+  }
 }
 
 .historyChartsStatValuePositive {
@@ -339,5 +359,15 @@
 
   .historyChartsMetaSkeleton {
     width: 10rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .historyChartsStats[data-wide] .historyChartsStat {
+    flex-basis: 100%;
+  }
+
+  .historyChartsCard {
+    padding: var(--spacing-200);
   }
 }

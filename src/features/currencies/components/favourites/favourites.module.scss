@@ -77,6 +77,9 @@
   padding: var(--spacing-150, 12px) var(--spacing-200, 16px);
   align-items: center;
   gap: var(--spacing-250, 20px);
+  // Long values drop onto their own line instead of being clipped.
+  flex-wrap: wrap;
+  row-gap: var(--spacing-100, 8px);
   align-self: stretch;
   box-sizing: border-box;
   border-radius: var(--corner-radius-10, 10px);
@@ -89,7 +92,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-100, 8px);
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   @include styles.text-preset-4;
   color: var(--colors-neutral-50, #fff);
@@ -106,7 +109,9 @@
   flex-direction: column;
   align-items: flex-end;
   gap: var(--spacing-050, 4px);
-  flex-shrink: 0;
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
 }
 
 .favouritesRate {
@@ -120,6 +125,8 @@
   color: var(--colors-neutral-50, #fff);
   text-align: right;
   font-variant-numeric: tabular-nums;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .favouritesChange {
@@ -143,6 +150,8 @@
 
 .favouritesFavouriteButton {
   flex-shrink: 0;
+  // Stays on the right edge if a very long value pushes it onto its own line.
+  margin-left: auto;
   width: 32px;
   height: 32px;
   border-color: var(--color-neutral-400, #3d3d3d);
@@ -179,9 +188,18 @@
 }
 
 @media (max-width: 480px) {
-  .favouritesItem {
-    gap: var(--spacing-150);
+  .favouritesBaseCard {
     padding: var(--spacing-200);
+  }
+
+  .favouritesItem {
+    column-gap: var(--spacing-150);
+    padding: var(--spacing-150);
+  }
+
+  .favouritesRate {
+    font-size: 14px;
+    letter-spacing: 0.5px;
   }
 
   .favouritesFavouriteButton {
